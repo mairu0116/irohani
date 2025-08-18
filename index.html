@@ -42,7 +42,7 @@
 <div class="container">
   <h1>いろはに奔走</h1>
   <div id="app" class="grid"></div>
-  <p class="footer">ろけっと</p>
+  <p class="footer">まいばすけっと</p>
 </div>
 
 <!-- Firebase CDN（あなたのプロジェクトの設定に差し替え） -->
@@ -386,11 +386,17 @@ function renderRoom(){
 function cardNode(ch, revealed, isMe){
   const hidden = !revealed && !isMe;        // 相手かつ未公開なら隠す
   const div = document.createElement('div');
+  const showXStyle = (ch === '×') && (isMe || revealed);
+
   div.className =
-    'card' + (ch==='×'?' x':'') +
+    'card' +
+    (showXStyle ? ' x' : '') +                    // ← 相手未公開×は x にしない
     (revealed ? ' revealed' : '') +
     (hidden ? ' hidden' : '');
-  div.textContent = hidden ? '？' : ch;      // ← 中身は出さない
+
+  // ★ 相手未公開は文字も出さず、常に「？」表示
+  div.textContent = hidden ? '？' : ch;
+
   return div;
 }
 
