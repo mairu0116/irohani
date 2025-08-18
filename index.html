@@ -42,7 +42,7 @@
 <div class="container">
   <h1>いろはに奔走</h1>
   <div id="app" class="grid"></div>
-  <p class="footer">ふぁみま</p>
+  <p class="footer">まいばすけっと</p>
 </div>
 
 <!-- Firebase CDN（あなたのプロジェクトの設定に差し替え） -->
@@ -187,14 +187,11 @@ function subscribeRoom(){
 /* お題＆単語ロック */
 async function lockWord(roomId, uid, raw){
   const word = normWord(raw);
-  if (!word){ alert('2〜7文字のひらがなで入力してください（濁点なし/小文字→大、伸ばし棒OK）'); return; }
+  if (!word){ alert('2〜7文字のひらがなで入力してください（濁点/半濁点なし、小文字は大文字化、伸ばし棒OK）'); return; }
   await db.ref(`rooms/${roomId}/players/${uid}`).update({
     word, revealed: new Array(word.length).fill(false), locked:true, dropped:false
   });
-  // ★ 入力を確定したのでドラフトを消す
-  clearDraft(roomId, uid);
 }
-
 
 /* ゲームスタート（全員ロック後に実行） */
 async function startGame(roomId){
@@ -344,60 +341,55 @@ function renderRoom(){
   const root = $('#app'); root.innerHTML='';
   const room = state.roomSnap?.val()||{};
   const panel = document.createElement('div'); panel.className='panel';
-
+  const topicWrap = document.createElement('div');
+  topicWrap.className = 'panel';
+  topicWrap.innerHTML = `
+    <div class="hint">お題</div>
+    <h3>${room.topic || '（未設定）'}</h3>
+    <div class="row">
+      <button id="pickTopic" class="ghost"${room.started?' disabled':''}>
+        ${room.topic ? 'お題を再抽選' : 'お題を抽選'}
+      </button>
+    </div>
+  `;
+  root.appendChild(topicWrap);
+  setTimeout(()=>{
+    const btn = document.getElementById('pickTopic');
+    if (btn) btn.onclick = ()=> setTopic(state.roomId);
+  });
   const players = Object.entries(room.players||{});
   const list = document.createElement('div'); list.className='players';
   players.forEach(([pid,p])=>{
     const d = document.createElement('div'); d.className='player';
-    const ok = p.locked && (p.word||[]).length===7;
-    d.innerHTML = `<strong>${p.name}</strong> <span class="pill">${ok?'準備OK':'準備中'}</span>`;
+    d.innerHTML = `<strong>${p.name}</strong> <span class="pill">${p.locked?'準備OK':'準備中'}</span>`;
     list.appendChild(d);
   });
 
-  // ★ 自分の状態
-  const me = (room.players||{})[state.myUid] || {};
-  const myLocked = !!me.locked;
-
   const controls = document.createElement('div'); controls.className='row';
   const wordWrap = document.createElement('div'); wordWrap.className='row';
-  wordWrap.innerHTML = `
-    <input id="myword" placeholder="お題に沿って2〜7文字（例：さかな）" style="min-width:260px" ${myLocked?'disabled':''} />
-    <button id="lock" class="success" ${myLocked?'disabled':''}>言葉をロック</button>
-  `;
+  wordWrap.innerHTML = `<input id="myword" placeholder="お題に沿って2〜7文字（例：さかな）" style="min-width:260px" /> <button id="lock" class="success">言葉をロック</button>`;
   controls.appendChild(wordWrap);
 
   const start = document.createElement('button'); start.textContent='ゲームスタート'; start.className='primary';
-  const canStart =
-    players.length >= 2 &&
-    players.every(([pid,p])=> p.locked && (p.word||[]).length===7);
-  start.disabled = !canStart;
-  start.onclick = ()=> {
-    if (!canStart) { alert('開始条件未達です'); return; }
-    startGame(state.roomId);
-  };
-
+  start.onclick = ()=> startGame(state.roomId);
   const back = document.createElement('button'); back.textContent='ロビーへ'; back.className='ghost';
   back.onclick = ()=>{ state.screen='lobby'; render(); };
 
+  const hint = document.createElement('div'); hint.className='hint';
+  hint.textContent = '全員が「言葉をロック」するとスタートできます。';
+
+  controls.appendChild(start); controls.appendChild(back);
+
   panel.innerHTML = `<h3>入室中のプレイヤー</h3>`;
   panel.appendChild(list);
-  controls.appendChild(start); controls.appendChild(back);
   panel.appendChild(controls);
+  panel.appendChild(hint);
   root.appendChild(panel);
 
-  // ★ ドラフト復元＆入力で保存
-  const $input = $('#myword');
-  if ($input){
-    $input.value = getDraft(state.roomId, state.myUid);   // ← 再描画でも残る
-    $input.addEventListener('input', (e)=>{
-      setDraft(state.roomId, state.myUid, e.target.value);
-    });
-  }
-
-  $('#lock')?.addEventListener('click', ()=>{
+  $('#lock').onclick = ()=>{
     const raw = $('#myword').value;
     lockWord(state.roomId, state.myUid, raw);
-  });
+  };
 
   if (room.started) { state.screen='game'; render(); }
 }
