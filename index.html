@@ -121,6 +121,10 @@ const BOARD = [
 const TOPICS = [
   'たべもの','どうぶつ','スポーツ','学校にあるもの','文房具','色の名前','国の名前','都道府県','飲み物','家電'
 ];
+async function setTopic(roomId){
+  const topic = TOPICS[Math.floor(Math.random()*TOPICS.length)];
+  await db.ref(`rooms/${roomId}/topic`).set(topic);
+}
 
 /* 状態 */
 const state = {
@@ -180,26 +184,33 @@ async function lockWord(roomId, uid, raw){
 
 /* ゲームスタート（全員ロック後に実行） */
 async function startGame(roomId){
+  let started = false, reason = '';
   await db.ref(`rooms/${roomId}`).transaction(room=>{
     if (!room) return room;
-    if (room.started) return room;
+    if (room.started) { started = true; return room; }
+
     const ps = room.players || {};
-    const allLocked = Object.values(ps).length>=2 && Object.values(ps).every(p=>p.locked && (p.word||[]).length===7);
-    if (!allLocked) return room;
-    // 参加順で先頭を先手
+    const ok2p = Object.values(ps).length>=2;
+    const allLocked = Object.values(ps).every(p=>p.locked && (p.word||[]).length===7);
+    if (!(ok2p && allLocked)) return room;
+
+    // ★ お題が未設定ならここで最終決定
+    if (!room.topic){
+      room.topic = TOPICS[Math.floor(Math.random()*TOPICS.length)];
+    }
+
     const order = Object.entries(ps).sort((a,b)=> (a[1].joinedAt||0)-(b[1].joinedAt||0));
-    room.topic = TOPICS[Math.floor(Math.random()*TOPICS.length)];
     room.currentTurnUid = order[0][0];
     room.consec = 0;
     room.started = true;
     room.winnerUid = null;
     room.lastAttack = null;
-    // 既に脱落してる人はいない想定だが一応整える
-    for (const [pid,p] of Object.entries(ps)){
-      p.dropped = false;
-    }
+    for (const [pid,p] of Object.entries(ps)) p.dropped = false;
+
+    started = true;
     return room;
   });
+  if (!started && reason) alert(reason);
 }
 
 /* 手番を次へ */
@@ -319,7 +330,22 @@ function renderRoom(){
   const root = $('#app'); root.innerHTML='';
   const room = state.roomSnap?.val()||{};
   const panel = document.createElement('div'); panel.className='panel';
-
+  const topicWrap = document.createElement('div');
+  topicWrap.className = 'panel';
+  topicWrap.innerHTML = `
+    <div class="hint">お題</div>
+    <h3>${room.topic || '（未設定）'}</h3>
+    <div class="row">
+      <button id="pickTopic" class="ghost"${room.started?' disabled':''}>
+        ${room.topic ? 'お題を再抽選' : 'お題を抽選'}
+      </button>
+    </div>
+  `;
+  root.appendChild(topicWrap);
+  setTimeout(()=>{
+    const btn = document.getElementById('pickTopic');
+    if (btn) btn.onclick = ()=> setTopic(state.roomId);
+  });
   const players = Object.entries(room.players||{});
   const list = document.createElement('div'); list.className='players';
   players.forEach(([pid,p])=>{
@@ -358,9 +384,13 @@ function renderRoom(){
 }
 
 function cardNode(ch, revealed, isMe){
+  const hidden = !revealed && !isMe;        // 相手かつ未公開なら隠す
   const div = document.createElement('div');
-  div.className = 'card'+(ch==='×'?' x':'')+(revealed?' revealed':'')+(!revealed && ch!=='×' && !isMe?' hidden':'');
-  div.textContent = ch;
+  div.className =
+    'card' + (ch==='×'?' x':'') +
+    (revealed ? ' revealed' : '') +
+    (hidden ? ' hidden' : '');
+  div.textContent = hidden ? '？' : ch;      // ← 中身は出さない
   return div;
 }
 
