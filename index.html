@@ -397,6 +397,14 @@ function cardNode(ch, revealed, isMe){
 function renderGame(){
   const root = $('#app'); root.innerHTML='';
   const room = state.roomSnap?.val(); if (!room) return;
+
+  // ★ ここを追加：未開始ならルーム画面へ戻す
+  if (!room.started) {
+    state.screen = 'room';
+    render();
+    return;
+  }
+
   const me = (room.players||{})[state.myUid]||{};
   const myTurn = room.currentTurnUid===state.myUid && !room.winnerUid;
 
@@ -421,8 +429,17 @@ function renderGame(){
   top.appendChild(status);
 
   const actions = document.createElement('div'); actions.className='panel';
-  const restartBtn = document.createElement('button'); restartBtn.className='danger'; restartBtn.textContent='リスタート（同じ面子）';
-  restartBtn.onclick = ()=>{ if(confirm('最初からやり直しますか？')) restart(state.roomId); };
+  const restartBtn = document.createElement('button');
+restartBtn.className='danger';
+restartBtn.textContent='リスタート（同じ面子）';
+restartBtn.onclick = async ()=>{
+  if (confirm('最初からやり直しますか？')) {
+    await restart(state.roomId);
+    // ★ 即座にルーム画面へ（サーバー反映を待たずにUXを良くする）
+    state.screen = 'room';
+    render();
+  }
+};
   actions.appendChild(restartBtn);
   actions.appendChild(Object.assign(document.createElement('div'),{className:'hint',innerHTML:'攻撃は自分の番にボードの文字をクリック。成功するともう1回だけ続けられます（自爆でも続行可）。'}));
   top.appendChild(actions);
