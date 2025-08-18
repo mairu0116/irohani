@@ -42,7 +42,7 @@
 <div class="container">
   <h1>いろはに奔走</h1>
   <div id="app" class="grid"></div>
-  <p class="footer">まいばすけっと</p>
+  <p class="footer">かりおすとろ</p>
 </div>
 
 <!-- Firebase CDN（あなたのプロジェクトの設定に差し替え） -->
@@ -216,7 +216,9 @@ async function startGame(roomId){
     room.started = true;
     room.winnerUid = null;
     room.lastAttack = null;
+    room.used = {}; // 例: { 'あ': true, 'か': true, ... }
     for (const [pid,p] of Object.entries(ps)) p.dropped = false;
+    
 
     started = true;
     return room;
@@ -253,6 +255,12 @@ async function attack(roomId, byUid, kana){
     if (!room?.started || room.winnerUid) return room;
     if (room.currentTurnUid !== byUid) return room;
     if (!BOARD.includes(kana)) return room;
+
+    room.used = room.used || {};
+    if (room.used[kana]) return room;   // 既に使われていたら無視
+
+    // ★ ここで使用済みに
+    room.used[kana] = true;
 
     let hit = false;
     // 全員分公開処理（自爆もここで）
@@ -298,6 +306,8 @@ async function restart(roomId){
       p.word=[]; p.revealed=[]; p.locked=false; p.dropped=false;
     }
     room.started=false; room.topic=null; room.currentTurnUid=null; room.consec=0; room.winnerUid=null; room.lastAttack=null;
+    room.consec=0; room.winnerUid=null; room.lastAttack=null;
+    room.used = {};    
     return room;
   });
 }
@@ -424,6 +434,8 @@ function renderGame(){
 
   const me = (room.players||{})[state.myUid]||{};
   const myTurn = room.currentTurnUid===state.myUid && !room.winnerUid;
+  
+  
 
   /* 上段：お題・ステータス・操作 */
   const top = document.createElement('div'); top.className='grid cols-3';
@@ -467,15 +479,21 @@ restartBtn.onclick = async ()=>{
   const boardWrap = document.createElement('div'); boardWrap.className='panel';
   boardWrap.innerHTML = `<h3>場のボード</h3>`;
   const board = document.createElement('div'); board.className='board';
+
+  const usedMap = room.used || {};  // ★
+
   BOARD.forEach(k=>{
+    const already = !!usedMap[k];                    // ★ 使用済み？
+    const canClick = myTurn && !already;             // ★ 自分の手番かつ未使用のみ
     const t = document.createElement('div');
-    t.className = 'tile '+(myTurn?'clickable':'disabled');
+    t.className = 'tile ' + (canClick ? 'clickable' : 'disabled'); // ★ 見た目分け
     t.textContent = k;
-    if (myTurn){
+    if (canClick){
       t.onclick = ()=> attack(state.roomId, state.myUid, k);
     }
     board.appendChild(t);
   });
+
   boardWrap.appendChild(board);
   root.appendChild(boardWrap);
 
