@@ -1,0 +1,471 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>いろはに奔走</title>
+<style>
+  :root{--bg:#0b1020;--panel:#121a32;--ink:#e6ecff;--muted:#9fb0ff;--ok:#44d7b6;--warn:#ffce54;--err:#ff6b6b;--accent:#7aa2ff}
+  *{box-sizing:border-box} body{margin:0;background:#0b1020;color:var(--ink);font-family:system-ui,-apple-system,Segoe UI,Roboto,"Noto Sans JP",sans-serif}
+  .container{max-width:1100px;margin:0 auto;padding:20px}
+  h1{margin:0 0 12px}
+  .panel{background:#121a32;border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:14px;margin:10px 0}
+  .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+  .grid{display:grid;gap:12px}
+  .cols-2{grid-template-columns:1fr 1fr}
+  .cols-3{grid-template-columns:1fr 1fr 1fr}
+  input,button{background:#0f1730;color:var(--ink);border:1px solid rgba(255,255,255,.2);border-radius:10px;padding:10px 12px}
+  button{cursor:pointer;font-weight:700}
+  .primary{background:linear-gradient(135deg,#5c86ff,#3fb4ff);border:none}
+  .danger{background:linear-gradient(135deg,#ff6b6b,#f78ca0);border:none}
+  .success{background:linear-gradient(135deg,#44d7b6,#6be6c1);border:none}
+  .ghost{background:transparent}
+  .hint{color:var(--muted);font-size:13px;margin-top:6px}
+  .kbd{border:1px solid rgba(255,255,255,.3);padding:2px 6px;border-radius:6px;background:rgba(255,255,255,.08);font-family:ui-monospace,monospace;font-size:12px}
+  .pill{font-size:11px;padding:4px 8px;border-radius:999px;background:#0e1640;border:1px solid rgba(255,255,255,.15);color:var(--muted)}
+  .players{display:flex;gap:10px;flex-wrap:wrap}
+  .player{display:flex;align-items:center;gap:8px;padding:8px 10px;border:1px solid rgba(255,255,255,.12);border-radius:10px}
+  .board{display:grid;grid-template-columns:repeat(10,1fr);gap:6px}
+  .tile{padding:10px 0;text-align:center;border:1px solid rgba(255,255,255,.15);border-radius:8px;background:#0e1640;user-select:none}
+  .tile.clickable{cursor:pointer}
+  .tile.disabled{opacity:.35}
+  .cards{display:flex;gap:8px;flex-wrap:wrap}
+  .card{width:48px;height:70px;border-radius:10px;border:1px solid rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;background:linear-gradient(180deg,#152045,#101a36);position:relative}
+  .card.x{opacity:.7}
+  .card.revealed{outline:2px solid var(--ok)}
+  .card.hidden::after{content:"";position:absolute;inset:0;border-radius:10px;background:rgba(0,0,0,.45)}
+  .me{outline:2px dashed rgba(122,162,255,.5)}
+  .footer{margin-top:18px;color:var(--muted);font-size:12px;text-align:center}
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>いろはに奔走</h1>
+  <div id="app" class="grid"></div>
+  <p class="footer">URL＋ルームIDを共有してオンライン対戦！</p>
+</div>
+
+<!-- Firebase CDN（あなたのプロジェクトの設定に差し替え） -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+<script>
+/*** ここをあなたのFirebase構成に置き換え ***/
+const firebaseConfig = {
+  apiKey: "AIzaSyDxt9FCqPYwGMx1brd1oWOSXxqqeajEkiE",
+  authDomain: "irohani-48cf2.firebaseapp.com",
+  projectId: "irohani-48cf2",
+  storageBucket: "irohani-48cf2.firebasestorage.app",
+  messagingSenderId: "917468195405",
+  appId: "1:917468195405:web:501559a87a364f67488a04"
+};
+/*** 以上 ***/
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+
+/* 便利関数 */
+const uid = () => localStorage.getItem('irohani_uid') || (localStorage.setItem('irohani_uid', Math.random().toString(36).slice(2,10)), localStorage.getItem('irohani_uid'));
+const now = () => Date.now();
+const qs = new URLSearchParams(location.search);
+
+/* ひらがな正規化：濁点/半濁点なし、小→大、スペース除去 */
+const mapDakuten = Object.fromEntries([
+  ['が','か'],['ぎ','き'],['ぐ','く'],['げ','け'],['ご','こ'],
+  ['ざ','さ'],['じ','し'],['ず','す'],['ぜ','せ'],['ぞ','そ'],
+  ['だ','た'],['ぢ','ち'],['づ','つ'],['で','て'],['ど','と'],
+  ['ば','は'],['び','ひ'],['ぶ','ふ'],['べ','へ'],['ぼ','ほ'],
+  ['ぱ','は'],['ぴ','ひ'],['ぷ','ふ'],['ぺ','へ'],['ぽ','ほ'],
+  ['ゔ','う']
+]);
+const mapSmall = Object.fromEntries([
+  ['ゃ','や'],['ゅ','ゆ'],['ょ','よ'],['っ','つ'],
+  ['ぁ','あ'],['ぃ','い'],['ぅ','う'],['ぇ','え'],['ぉ','お']
+]);
+function toHiragana(s){
+  return s.replace(/[\u30a1-\u30f6]/g, c => String.fromCharCode(c.charCodeAt(0)-0x60));
+}
+function normWord(input){
+  let s = (input||'').toString().trim();
+  s = toHiragana(s);
+  s = s.replace(/\s+/g,'');
+  // 1文字ずつ変換
+  let out = [];
+  for (const ch of s){
+    if (mapDakuten[ch]) out.push(mapDakuten[ch]);
+    else if (mapSmall[ch]) out.push(mapSmall[ch]);
+    else out.push(ch);
+  }
+  // ひらがなのみ＆伸ばし棒「ー」はOK
+  out = out.filter(c => /[ぁ-んー]/.test(c));
+  // 2〜7に収める
+  if (out.length < 2 || out.length > 7) return null;
+  while(out.length < 7) out.push('×');
+  return out;
+}
+
+/* 五十音ボード（＋伸ばし棒） */
+const BOARD = [
+  'あ','い','う','え','お',
+  'か','き','く','け','こ',
+  'さ','し','す','せ','そ',
+  'た','ち','つ','て','と',
+  'な','に','ぬ','ね','の',
+  'は','ひ','ふ','へ','ほ',
+  'ま','み','む','め','も',
+  'や','ゆ','よ','ら','り',
+  'る','れ','ろ','わ','を',
+  'ん','ー'
+];
+
+/* お題（必要に応じて増やしてOK） */
+const TOPICS = [
+  'たべもの','どうぶつ','スポーツ','学校にあるもの','文房具','色の名前','国の名前','都道府県','飲み物','家電'
+];
+
+/* 状態 */
+const state = {
+  screen: 'lobby', // lobby | room | game
+  roomId: '',
+  myUid: uid(),
+  name: '',
+  roomRef: null,
+  roomSnap: null
+};
+
+/* ルーム構造
+rooms/{roomId} = {
+  createdAt, started, topic, currentTurnUid, consec, winnerUid,
+  players: {
+    uid: { name, word: ['あ','い',...,'×'], revealed: [false..], locked: false, dropped: false, joinedAt }
+  },
+  lastAttack: { by, kana, success, ts }
+}
+*/
+
+async function joinRoom(roomId, name){
+  const ref = db.ref(`rooms/${roomId}`);
+  const snap = await ref.get();
+  if (!snap.exists()){
+    await ref.set({
+      createdAt: now(), started:false, topic:null, currentTurnUid:null, consec:0, winnerUid:null,
+      players:{}, lastAttack:null
+    });
+  }
+  await db.ref(`rooms/${roomId}/players/${state.myUid}`).set({
+    name, word:[], revealed:[], locked:false, dropped:false, joinedAt: now()
+  });
+  return ref;
+}
+
+window.addEventListener('beforeunload', ()=>{
+  if (state.roomId && state.myUid) {
+    db.ref(`rooms/${state.roomId}/players/${state.myUid}`).remove();
+  }
+});
+
+/* ルーム購読 */
+function subscribeRoom(){
+  if (!state.roomRef) return;
+  state.roomRef.on('value', snap => { state.roomSnap = snap; if (state.screen!=='lobby') render(); });
+}
+
+/* お題＆単語ロック */
+async function lockWord(roomId, uid, raw){
+  const word = normWord(raw);
+  if (!word){ alert('2〜7文字のひらがなで入力してください（濁点/半濁点なし、小文字は大文字化、伸ばし棒OK）'); return; }
+  await db.ref(`rooms/${roomId}/players/${uid}`).update({
+    word, revealed: new Array(word.length).fill(false), locked:true, dropped:false
+  });
+}
+
+/* ゲームスタート（全員ロック後に実行） */
+async function startGame(roomId){
+  await db.ref(`rooms/${roomId}`).transaction(room=>{
+    if (!room) return room;
+    if (room.started) return room;
+    const ps = room.players || {};
+    const allLocked = Object.values(ps).length>=2 && Object.values(ps).every(p=>p.locked && (p.word||[]).length===7);
+    if (!allLocked) return room;
+    // 参加順で先頭を先手
+    const order = Object.entries(ps).sort((a,b)=> (a[1].joinedAt||0)-(b[1].joinedAt||0));
+    room.topic = TOPICS[Math.floor(Math.random()*TOPICS.length)];
+    room.currentTurnUid = order[0][0];
+    room.consec = 0;
+    room.started = true;
+    room.winnerUid = null;
+    room.lastAttack = null;
+    // 既に脱落してる人はいない想定だが一応整える
+    for (const [pid,p] of Object.entries(ps)){
+      p.dropped = false;
+    }
+    return room;
+  });
+}
+
+/* 手番を次へ */
+function nextAliveUid(room){
+  const entries = Object.entries(room.players||{}).sort((a,b)=> (a[1].joinedAt||0)-(b[1].joinedAt||0));
+  if (!room.currentTurnUid) return entries[0]?.[0]||null;
+  const alive = entries.filter(([id,p])=>!p.dropped);
+  const idx = alive.findIndex(([id])=> id===room.currentTurnUid);
+  if (idx===-1) return alive[0]?.[0]||null;
+  return alive[(idx+1)%alive.length]?.[0]||null;
+}
+
+/* 脱落/勝者チェック */
+function checkDropAndWinner(room){
+  let aliveIds = [];
+  for (const [pid,p] of Object.entries(room.players||{})){
+    const w = p.word||[];
+    const r = p.revealed||[];
+    const allOpen = w.every((ch,i)=> ch==='×' || r[i]===true);
+    if (allOpen) p.dropped = true;
+    if (!p.dropped) aliveIds.push(pid);
+  }
+  if (aliveIds.length===1) room.winnerUid = aliveIds[0];
+}
+
+/* 攻撃 */
+async function attack(roomId, byUid, kana){
+  await db.ref(`rooms/${roomId}`).transaction(room=>{
+    if (!room?.started || room.winnerUid) return room;
+    if (room.currentTurnUid !== byUid) return room;
+    if (!BOARD.includes(kana)) return room;
+
+    let hit = false;
+    // 全員分公開処理（自爆もここで）
+    for (const [pid,p] of Object.entries(room.players||{})){
+      const w = p.word||[];
+      const r = p.revealed||[];
+      for (let i=0;i<w.length;i++){
+        if (!r[i] && w[i]===kana && w[i]!=='×'){
+          r[i] = true; hit = true;
+        }
+      }
+      p.revealed = r;
+    }
+
+    // 脱落/勝者判定
+    checkDropAndWinner(room);
+
+    // 連撃/手番遷移
+    if (!hit){
+      room.consec = 0;
+      room.currentTurnUid = nextAliveUid(room);
+    }else{
+      if (room.consec===0){
+        room.consec = 1; // もう1回
+      }else{
+        // 2回目を終えたら終了
+        room.consec = 0;
+        room.currentTurnUid = nextAliveUid(room);
+      }
+    }
+
+    room.lastAttack = { by: byUid, kana, success: hit, ts: now() };
+    return room;
+  });
+}
+
+/* リスタート（同じ面子で再戦） */
+async function restart(roomId){
+  await db.ref(`rooms/${roomId}`).transaction(room=>{
+    if (!room) return room;
+    const ps = room.players||{};
+    for (const [pid,p] of Object.entries(ps)){
+      p.word=[]; p.revealed=[]; p.locked=false; p.dropped=false;
+    }
+    room.started=false; room.topic=null; room.currentTurnUid=null; room.consec=0; room.winnerUid=null; room.lastAttack=null;
+    return room;
+  });
+}
+
+/* 画面描画 */
+const $ = s => document.querySelector(s);
+
+function renderLobby(){
+  const root = $('#app'); root.innerHTML='';
+  const panel = document.createElement('div'); panel.className='panel grid';
+
+  const name = qs.get('name') || '';
+  const room = qs.get('room') || '';
+  if (name && !state.name) state.name = name;
+
+  panel.innerHTML = `
+    <div class="row"><div class="hint">URLに <span class="kbd">?room=ROOMID&name=あなたの名前</span> を付けて共有すると入室が楽です。</div></div>
+    <div class="row"><label>ユーザー名</label><input id="name" placeholder="例：たろう" value="${state.name||''}" /></div>
+    <div class="row"><label>ルームID</label><input id="room" placeholder="例：IROHA123" value="${room||''}" /></div>
+    <div class="row">
+      <button class="primary" id="enter">入室 / 作成</button>
+    </div>
+    <div class="panel">
+      <div class="hint"><strong>ルール要約：</strong>お題に沿った2〜7文字の言葉をひらがなで（濁点なし/小文字→大文字、足りない分×）。手番でボードの文字を宣言して攻撃、該当カードを公開。成功ならもう1回だけ連撃OK。×以外が全公開で脱落、最後まで残った人が勝ち。</div>
+    </div>
+  `;
+  root.appendChild(panel);
+
+  $('#enter').onclick = async ()=>{
+    const name = $('#name').value.trim();
+    const roomId = $('#room').value.trim();
+    if (!name || !roomId){ alert('ユーザー名とルームIDを入力してください'); return; }
+    state.name = name; state.roomId = roomId;
+    state.roomRef = await joinRoom(roomId, name);
+    subscribeRoom();
+    state.screen = 'room'; render();
+  };
+}
+
+function renderRoom(){
+  const root = $('#app'); root.innerHTML='';
+  const room = state.roomSnap?.val()||{};
+  const panel = document.createElement('div'); panel.className='panel';
+
+  const players = Object.entries(room.players||{});
+  const list = document.createElement('div'); list.className='players';
+  players.forEach(([pid,p])=>{
+    const d = document.createElement('div'); d.className='player';
+    d.innerHTML = `<strong>${p.name}</strong> <span class="pill">${p.locked?'準備OK':'準備中'}</span>`;
+    list.appendChild(d);
+  });
+
+  const controls = document.createElement('div'); controls.className='row';
+  const wordWrap = document.createElement('div'); wordWrap.className='row';
+  wordWrap.innerHTML = `<input id="myword" placeholder="お題に沿って2〜7文字（例：さかな）" style="min-width:260px" /> <button id="lock" class="success">言葉をロック</button>`;
+  controls.appendChild(wordWrap);
+
+  const start = document.createElement('button'); start.textContent='ゲームスタート'; start.className='primary';
+  start.onclick = ()=> startGame(state.roomId);
+  const back = document.createElement('button'); back.textContent='ロビーへ'; back.className='ghost';
+  back.onclick = ()=>{ state.screen='lobby'; render(); };
+
+  const hint = document.createElement('div'); hint.className='hint';
+  hint.textContent = '全員が「言葉をロック」するとスタートできます。';
+
+  controls.appendChild(start); controls.appendChild(back);
+
+  panel.innerHTML = `<h3>入室中のプレイヤー</h3>`;
+  panel.appendChild(list);
+  panel.appendChild(controls);
+  panel.appendChild(hint);
+  root.appendChild(panel);
+
+  $('#lock').onclick = ()=>{
+    const raw = $('#myword').value;
+    lockWord(state.roomId, state.myUid, raw);
+  };
+
+  if (room.started) { state.screen='game'; render(); }
+}
+
+function cardNode(ch, revealed, isMe){
+  const div = document.createElement('div');
+  div.className = 'card'+(ch==='×'?' x':'')+(revealed?' revealed':'')+(!revealed && ch!=='×' && !isMe?' hidden':'');
+  div.textContent = ch;
+  return div;
+}
+
+function renderGame(){
+  const root = $('#app'); root.innerHTML='';
+  const room = state.roomSnap?.val(); if (!room) return;
+  const me = (room.players||{})[state.myUid]||{};
+  const myTurn = room.currentTurnUid===state.myUid && !room.winnerUid;
+
+  /* 上段：お題・ステータス・操作 */
+  const top = document.createElement('div'); top.className='grid cols-3';
+
+  const topic = document.createElement('div'); topic.className='panel';
+  topic.innerHTML = `<div class="hint">お題</div><h3>${room.topic||'—'}</h3>`;
+  top.appendChild(topic);
+
+  const status = document.createElement('div'); status.className='panel';
+  if (room.winnerUid){
+    status.innerHTML = `<h3 style="color:var(--ok)">勝者：${room.players[room.winnerUid]?.name||'？？？'}</h3>`;
+  }else{
+    status.innerHTML = `<div class="hint">手番：<strong>${room.players[room.currentTurnUid]?.name||'—'}</strong>（${room.consec===1?'あと1回攻撃可':'最大2連まで'}）</div>`;
+    if (room.lastAttack){
+      const la = room.lastAttack;
+      const who = room.players[la.by]?.name||'—';
+      status.innerHTML += `<div class="hint">直前：${who}「${la.kana}」→${la.success?'成功':'失敗'}</div>`;
+    }
+  }
+  top.appendChild(status);
+
+  const actions = document.createElement('div'); actions.className='panel';
+  const restartBtn = document.createElement('button'); restartBtn.className='danger'; restartBtn.textContent='リスタート（同じ面子）';
+  restartBtn.onclick = ()=>{ if(confirm('最初からやり直しますか？')) restart(state.roomId); };
+  actions.appendChild(restartBtn);
+  actions.appendChild(Object.assign(document.createElement('div'),{className:'hint',innerHTML:'攻撃は自分の番にボードの文字をクリック。成功するともう1回だけ続けられます（自爆でも続行可）。'}));
+  top.appendChild(actions);
+
+  root.appendChild(top);
+
+  /* ボード */
+  const boardWrap = document.createElement('div'); boardWrap.className='panel';
+  boardWrap.innerHTML = `<h3>場のボード</h3>`;
+  const board = document.createElement('div'); board.className='board';
+  BOARD.forEach(k=>{
+    const t = document.createElement('div');
+    t.className = 'tile '+(myTurn?'clickable':'disabled');
+    t.textContent = k;
+    if (myTurn){
+      t.onclick = ()=> attack(state.roomId, state.myUid, k);
+    }
+    board.appendChild(t);
+  });
+  boardWrap.appendChild(board);
+  root.appendChild(boardWrap);
+
+  /* 他プレイヤー */
+  const others = document.createElement('div'); others.className='panel';
+  others.innerHTML = `<h3>他のプレイヤー</h3>`;
+  const list = document.createElement('div'); list.className='players';
+  for (const [pid,p] of Object.entries(room.players||{})){
+    if (pid===state.myUid) continue;
+    const d = document.createElement('div'); d.className='player'+(p.dropped?'':'');
+    d.innerHTML = `<strong>${p.name}</strong> ${p.dropped?'<span class="pill">脱落</span>':''}`;
+    const hand = document.createElement('div'); hand.className='cards';
+    (p.word||[]).forEach((ch,i)=>{
+      hand.appendChild(cardNode(ch, (p.revealed||[])[i], false));
+    });
+    d.appendChild(hand);
+    list.appendChild(d);
+  }
+  others.appendChild(list);
+  root.appendChild(others);
+
+  /* 自分の手札 */
+  const mine = document.createElement('div'); mine.className='panel';
+  mine.innerHTML = `<h3>自分の手札</h3>`;
+  const myhand = document.createElement('div'); myhand.className='cards me';
+  (me.word||[]).forEach((ch,i)=>{
+    myhand.appendChild(cardNode(ch, (me.revealed||[])[i], true));
+  });
+  mine.appendChild(myhand);
+  const hint = document.createElement('div'); hint.className='hint';
+  hint.innerHTML = `×は空白カード。<br>公開条件：宣言文字に一致したカード（同じ文字が複数あれば全部公開）。×以外が全部公開で脱落。`;
+  mine.appendChild(hint);
+  root.appendChild(mine);
+}
+
+function render(){
+  if (state.screen==='lobby') return renderLobby();
+  if (state.screen==='room') return renderRoom();
+  if (state.screen==='game') return renderGame();
+}
+
+/* 初期表示（QSがあれば活用） */
+(function initFromQS(){
+  const r = qs.get('room'); const n = qs.get('name');
+  if (n) state.name = n;
+  if (r){
+    state.roomId = r;
+    joinRoom(r, n||('ななし_'+state.myUid.slice(0,4))).then(ref=>{
+      state.roomRef = ref; subscribeRoom(); state.screen='room'; render();
+    });
+  }else{
+    state.screen='lobby'; render();
+  }
+})();
+</script>
+</body>
+</html>
