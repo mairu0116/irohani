@@ -144,7 +144,7 @@
       <div class="logo-emoji">🎴🏮</div>
       <div>
         <h1>いろはに奔走</h1>
-        <div class="subtitle">おし～っこ</div>
+        <div class="subtitle">おし～っこの倫理観</div>
       </div>
     </div>
   
@@ -154,7 +154,7 @@
 </header>
 
   <div id="app" class="grid"></div>
-  <p class="footer">空は紅い</p>
+  <p class="footer">バターが絡みついて、いやだねえ</p>
 </div>
 <div class="toast" id="toast"></div>
 
@@ -584,6 +584,9 @@ function renderRoom(){
     const raw = document.getElementById('myword').value;
     lockWord(state.roomId, state.myUid, raw);
   };
+  // ✅ お題抽選ボタンの挙動（未開始時のみ押下可）
+  const pickBtn = document.getElementById('pickTopic');
+  if (pickBtn && !room.started){ pickBtn.onclick = ()=> setTopic(state.roomId); }
 
   if (room.started) { state.screen='game'; render(); }
 }
@@ -619,7 +622,7 @@ function renderGame(){
       const who = room.players[la.by]?.name||'—';
       status.innerHTML += `<div class=\"hint\" style=\"margin-top:8px\">直前：${who}「${la.kana}」→${la.success?'成功':'失敗'}</div>`;
 
-      // Toast for new attack
+      // Toast & SFX for new attack
       if (la.ts && la.ts !== state.lastSeenAttackTs){
         state.lastSeenAttackTs = la.ts;
         showToast(`${who} が「${la.kana}」を宣言 — ${la.success? '🎯 あたり！' : '💥 はずれ…'}`, la.success);
@@ -811,25 +814,16 @@ document.addEventListener('DOMContentLoaded', ()=>{
     };
   }
 
-  // Wrap showToast to infer hit/miss SFX
+  // ✅ 正規表現の誤り修正：文字クラス→選択（OR）
   if (typeof window.showToast === 'function'){
     const _showToast = window.showToast;
     window.showToast = function(msg){
       try{
         const s = String(msg||'');
-        if (/[成功|🎯|あたり]/.test(s)) SE.hit.play();
-        else if (/[失敗|はずれ|💥]/.test(s)) SE.miss.play();
+        if (/(成功|🎯|あたり)/.test(s)) SE.hit.play();
+        else if (/(失敗|はずれ|💥)/.test(s)) SE.miss.play();
       }catch(e){}
       return _showToast.apply(this, arguments);
-    };
-  }
-
-  // Wrap confetti for win SFX
-  if (typeof window.confetti === 'function'){
-    const _confetti = window.confetti;
-    window.confetti = function(){
-      try{ SE.win.play(); }catch(e){}
-      return _confetti.apply(this, arguments);
     };
   }
 
@@ -850,7 +844,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
       lockBtn.addEventListener('click', ()=> SE.lock.play());
       lockBtn._seBound = true;
     }
-    // Tiles (best-effort)
+    // Tiles (board selection)
     document.querySelectorAll('.tile, [data-tile]').forEach(el=>{
       if (!el._seBound){
         el.addEventListener('click', ()=> SE.click.play(), { capture:true });
