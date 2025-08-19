@@ -3,55 +3,62 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>いろはに奔走 - みんなで楽しく文字当てゲーム！</title>
-<link href="https://fonts.googleapis.com/css2?family=Bangers&family=M+PLUS+Rounded+1c:wght@400;700;900&display=swap" rel="stylesheet">
+<title>いろはに奔走 - 和趣の文字当て遊戯</title>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho+B1:wght@400;700;900&family=Yuji+Syuku&display=swap" rel="stylesheet">
 <style>
-  /* ===== Theme (brighter, pop, playful) ===== */
+  /* ===== 和風テーマ（紙・墨・藍・朱・金） ===== */
   :root{
-    --bg:#0b0f2a;           /* base background */
-    --bg2:#0e1540;          /* card background */
-    --ink:#f4f7ff;          /* primary text */
-    --muted:#b7c3ff;        /* hint text */
-    --ok:#44d7b6;           /* success */
-    --warn:#ffd166;         /* warning */
-    --err:#ff6b6b;          /* error */
-    --accent:#7aa2ff;       /* accent */
-    --accent2:#ff72d2;      /* secondary accent */
-    --glow: 0 0 18px rgba(122,162,255,.35), 0 0 36px rgba(255,114,210,.15);
+    --paper:#f7f4e9;        /* 和紙 */
+    --paper2:#f2efe6;       /* 和紙影 */
+    --ink:#27231f;          /* 墨色 */
+    --muted:#6f675f;        /* 落ち着き */
+    --indigo:#1a2c42;       /* 藍色 */
+    --vermilion:#b3352e;    /* 朱色 */
+    --asagi:#6f9dbb;        /* 浅葱 */
+    --gold:#c8a44d;         /* 金 */
+    --ok:#7b955b;           /* 萌黄 */
+    --warn:#b58b3a;         /* 朽葉 */
+    --err:#a04b4b;          /* 紅樺 */
   }
+
   *{box-sizing:border-box}
   html,body{height:100%}
   body{
-    margin:0; color:var(--ink); font-family:"M PLUS Rounded 1c", system-ui, -apple-system, Segoe UI, Roboto, "Noto Sans JP", sans-serif;
-    background: radial-gradient(1200px 800px at 10% -10%, #1a2b72 0%, transparent 60%),
-                radial-gradient(900px 700px at 110% 20%, #37145f 0%, transparent 60%),
-                linear-gradient(180deg, #0a0e25 0%, #0b132e 100%);
+    margin:0; color:var(--ink);
+    font-family:"Shippori Mincho B1", "Hiragino Mincho ProN", "Yu Mincho", "Noto Serif JP", serif;
+    background:
+      radial-gradient(1100px 780px at 10% -10%, rgba(26,44,66,.06) 0%, transparent 60%),
+      radial-gradient(900px 700px at 110% 20%, rgba(179,53,46,.05) 0%, transparent 60%),
+      linear-gradient(180deg, var(--paper) 0%, var(--paper2) 100%);
     overflow-x:hidden;
   }
-  .bg-dots::before{ /* playful floating dots */
-    content:""; position:fixed; inset:0; pointer-events:none; opacity:.25; mix-blend-mode:screen;
+
+  /* 細かな小紋風パターン（極薄） */
+  .bg-dots::before{
+    content:""; position:fixed; inset:0; pointer-events:none; opacity:.14; mix-blend-mode:multiply;
     background:
-      radial-gradient(8px 8px at 10% 20%, #7aa2ff 0 40%, transparent 41%),
-      radial-gradient(10px 10px at 70% 10%, #ff72d2 0 40%, transparent 41%),
-      radial-gradient(6px 6px at 30% 80%, #44d7b6 0 40%, transparent 41%),
-      radial-gradient(9px 9px at 90% 70%, #ffd166 0 40%, transparent 41%);
-    animation: floatDots 12s linear infinite;
+      radial-gradient(closest-side, rgba(26,44,66,.10) 80%, transparent 81%) 0 0/32px 32px,
+      radial-gradient(closest-side, rgba(26,44,66,.10) 80%, transparent 81%) 16px 16px/32px 32px;
   }
-  @keyframes floatDots{0%{transform:translateY(0)}50%{transform:translateY(-20px)}100%{transform:translateY(0)}}
 
   .container{max-width:1100px;margin:0 auto;padding:24px}
 
   header{display:flex; align-items:center; justify-content:space-between; gap:12px; margin:4px 0 16px}
-  .logo{display:flex; gap:10px; align-items:center}
-  .logo-emoji{font-size:28px; filter: drop-shadow(0 2px 6px rgba(255,255,255,.15));}
-  h1{margin:0; font-family:"Bangers", system-ui; letter-spacing:.5px; font-size:42px; line-height:1; 
-     background: linear-gradient(95deg, #7aa2ff 10%, #ff72d2 55%, #44d7b6 100%);
-     -webkit-background-clip:text; background-clip:text; color:transparent; text-shadow: 0 0 0 rgba(0,0,0,0);
-  }
+  .logo{display:flex; gap:12px; align-items:center}
+  .logo-emoji{font-size:26px; filter: drop-shadow(0 1px 0 rgba(255,255,255,.6));}
+  h1{margin:0; font-family:"Yuji Syuku", serif; letter-spacing:.08em; font-size:40px; line-height:1.1; color:var(--indigo); text-shadow:0 1px 0 rgba(255,255,255,.45)}
+  h1::after{content:""; display:block; width:160px; height:7px; margin-top:6px; border-radius:999px;
+    background: linear-gradient(90deg, var(--vermilion), rgba(179,53,46,.45));}
   .subtitle{margin-top:4px; color:var(--muted); font-size:12px}
 
-  .panel{background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
-         border:1px solid rgba(255,255,255,.12); border-radius:16px; padding:16px; margin:12px 0; box-shadow: var(--glow);}
+  /* 紙の面（panel） */
+  .panel{
+    background:
+      linear-gradient(180deg, rgba(255,255,255,.6), rgba(255,255,255,.35)),
+      radial-gradient(1200px 800px at 80% -10%, rgba(200,164,77,.08), transparent 60%);
+    border:1px solid rgba(39,35,31,.22); border-radius:14px; padding:16px; margin:12px 0;
+    box-shadow: 0 2px 0 rgba(0,0,0,.04), 0 8px 24px rgba(0,0,0,.06);
+  }
 
   .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
   .grid{display:grid;gap:14px}
@@ -59,63 +66,71 @@
   .cols-3{grid-template-columns:repeat(3, 1fr)}
   @media (max-width:900px){ .cols-3{grid-template-columns:1fr} }
 
-  input,button{background:#0f1730;color:var(--ink);border:1px solid rgba(255,255,255,.22);border-radius:12px;padding:12px 14px}
-  input{min-width:220px}
-  button{cursor:pointer;font-weight:800;letter-spacing:.3px; transition: transform .08s ease, filter .12s ease, box-shadow .12s ease}
+  input,button{background:rgba(255,255,255,.7);color:var(--ink);border:1px solid rgba(39,35,31,.24);border-radius:10px;padding:10px 12px}
+  input{min-width:220px; font-family:inherit}
+  button{cursor:pointer;font-weight:700;letter-spacing:.06em; transition: transform .08s ease, filter .12s ease, box-shadow .12s ease}
   button:active{transform:translateY(1px) scale(.99)}
-  .primary{background:linear-gradient(135deg,#5c86ff,#3fb4ff);border:none; box-shadow: 0 6px 18px rgba(63,180,255,.3)}
-  .danger{background:linear-gradient(135deg,#ff6b6b,#f78ca0);border:none; box-shadow: 0 6px 18px rgba(247,140,160,.25)}
-  .success{background:linear-gradient(135deg,#44d7b6,#6be6c1);border:none; box-shadow: 0 6px 18px rgba(68,215,182,.25)}
+  .primary{background:linear-gradient(180deg, #23384f, #1a2c42); color:#faf7ed; border-color:#132334; box-shadow: 0 4px 12px rgba(26,44,66,.25)}
+  .danger{background:linear-gradient(180deg, #8f2d27, #7a221d); color:#fff7f2; border-color:#5f1d18; box-shadow: 0 4px 12px rgba(179,53,46,.22)}
+  .success{background:linear-gradient(180deg, #6a8551, #556e42); color:#f7fff2; border-color:#445c35; box-shadow: 0 4px 12px rgba(85,110,66,.22)}
   .ghost{background:transparent}
-  .primary:hover,.danger:hover,.success:hover{filter: brightness(1.05)}
+  .primary:hover,.danger:hover,.success:hover{filter: brightness(1.03)}
 
   .hint{color:var(--muted);font-size:13px;margin-top:6px}
-  .kbd{border:1px solid rgba(255,255,255,.3);padding:2px 6px;border-radius:6px;background:rgba(255,255,255,.08);font-family:ui-monospace,monospace;font-size:12px}
-  .pill{font-size:11px;padding:5px 9px;border-radius:999px;background:#0e1640;border:1px solid rgba(255,255,255,.15);color:var(--muted)}
+  .kbd{border:1px solid rgba(39,35,31,.28);padding:2px 6px;border-radius:6px;background:rgba(0,0,0,.04);font-family:ui-monospace,monospace;font-size:12px}
+  .pill{font-size:11px;padding:5px 9px;border-radius:999px;background:#efe8d8;border:1px solid rgba(200,164,77,.55);color:#6a5f51}
 
   .players{display:flex;gap:10px;flex-wrap:wrap}
-  .player{display:flex;align-items:center;gap:10px;padding:10px 12px;border:1px solid rgba(255,255,255,.12);border-radius:12px;background:linear-gradient(180deg,#131a3b,#101633)}
-  .player.active{outline:2px solid var(--accent); box-shadow: 0 0 0 4px rgba(122,162,255,.18); animation: bump .8s ease}
-  .dot{width:10px;height:10px;border-radius:50%; background:linear-gradient(180deg,#5c86ff,#3fb4ff); box-shadow:0 0 0 3px rgba(122,162,255,.25)}
+  .player{display:flex;align-items:center;gap:10px;padding:10px 12px;border:1px solid rgba(39,35,31,.18);border-radius:12px;background:linear-gradient(180deg, #fffdf6, #f4eedf)}
+  .player.active{outline:2px solid var(--gold); box-shadow: 0 0 0 4px rgba(200,164,77,.18); animation: bump .8s ease}
+  .dot{width:10px;height:10px;border-radius:50%; background:linear-gradient(180deg,var(--vermilion),#e08378); box-shadow:0 0 0 2px rgba(179,53,46,.18)}
   @keyframes bump{0%{transform:scale(1)}30%{transform:scale(1.06)}100%{transform:scale(1)}}
 
+  /* 五十音ボード：木札風 */
   .board{display:grid;grid-template-columns:repeat(10,1fr);gap:8px}
-  .tile{position:relative; padding:12px 0;text-align:center;border:1px solid rgba(255,255,255,.15);border-radius:12px;user-select:none;
-        background:linear-gradient(180deg,#142357,#101a36); font-weight:900; letter-spacing:.1em; box-shadow: 0 8px 24px rgba(0,0,0,.25);
+  .tile{position:relative; padding:12px 0;text-align:center;border:1px solid rgba(39,35,31,.22);border-radius:10px;user-select:none;
+        background:linear-gradient(180deg,#f0e5cf,#e5d1a0); font-weight:900; letter-spacing:.12em; color:#2a2622;
+        text-shadow:0 1px 0 rgba(255,255,255,.65); box-shadow: 0 6px 16px rgba(0,0,0,.12);
         transition: transform .08s ease, box-shadow .12s ease, filter .12s ease, opacity .2s ease}
-  .tile.clickable{cursor:pointer; animation: float 2.8s ease-in-out infinite}
-  .tile.clickable:hover{transform: translateY(-3px) scale(1.05); box-shadow: 0 10px 28px rgba(122,162,255,.35)}
-  .tile.idle{opacity:.65}
-  .tile.used{opacity:.35; filter: grayscale(.2)}
-  .tile.used::after{content:"済"; position:absolute; inset:auto 6px 6px auto; font-size:11px; padding:2px 6px; border-radius:999px; background:#222a55; color:#9fb0ff; border:1px solid rgba(255,255,255,.18)}
-  @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-2px)}}
+  .tile.clickable{cursor:pointer}
+  .tile.clickable:hover{transform: translateY(-2px); box-shadow: 0 10px 24px rgba(0,0,0,.18)}
+  .tile.idle{opacity:.75}
+  .tile.used{opacity:.45; filter: grayscale(.1)}
+  .tile.used::after{content:"済"; position:absolute; inset:auto 6px 6px auto; font-size:11px; padding:3px 7px; border-radius:999px; background:#fff2ef; color:var(--vermilion);
+    border:1px solid rgba(179,53,46,.45); box-shadow: inset 0 0 0 2px rgba(179,53,46,.12)}
 
+  /* 手札：札風 */
   .cards{display:flex;gap:10px;flex-wrap:wrap}
-  .card{width:52px;height:74px;border-radius:12px;border:1px solid rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;background:linear-gradient(180deg,#152045,#0f1732);position:relative;
-        box-shadow: 0 8px 22px rgba(0,0,0,.35); font-weight:900}
-  .card.x{opacity:.75}
-  .card.revealed{outline:2px solid var(--ok); box-shadow: 0 0 0 4px rgba(68,215,182,.18)}
-  .card.hidden::after{content:"";position:absolute;inset:0;border-radius:12px;background:linear-gradient(145deg,rgba(0,0,0,.5),rgba(0,0,0,.25));}
-  .me{outline:2px dashed rgba(122,162,255,.5); padding:12px; border-radius:14px;}
+  .card{width:52px;height:74px;border-radius:12px;border:1px solid rgba(39,35,31,.22);display:flex;align-items:center;justify-content:center;
+        background:linear-gradient(180deg,#fff8e9,#f1e3cc);position:relative; box-shadow: 0 6px 18px rgba(0,0,0,.16); font-weight:900; color:var(--ink)}
+  .card.x{opacity:.8}
+  .card.revealed{outline:2px solid var(--ok); box-shadow: 0 0 0 4px rgba(123,149,91,.18)}
+  .card.hidden::after{content:"";position:absolute;inset:0;border-radius:12px;
+    background:
+      repeating-linear-gradient(45deg, rgba(26,44,66,.1) 0 6px, transparent 6px 12px),
+      linear-gradient(180deg, rgba(255,255,255,.6), rgba(255,255,255,.35));}
+  .me{outline:2px dashed rgba(200,164,77,.5); padding:12px; border-radius:14px;}
 
   .footer{margin-top:18px;color:var(--muted);font-size:12px;text-align:center}
 
-  .topic-chip{display:inline-flex; align-items:center; gap:8px; padding:8px 12px; border-radius:999px; font-weight:800; background:linear-gradient(135deg,#5c86ff,#ff72d2); box-shadow: 0 6px 20px rgba(127,114,255,.28)}
+  .topic-chip{display:inline-flex; align-items:center; gap:8px; padding:8px 12px; border-radius:999px; font-weight:800; color:#fff;
+    background:linear-gradient(135deg, var(--vermilion), #d25a52); border:1px solid rgba(179,53,46,.55);
+    box-shadow: 0 4px 14px rgba(179,53,46,.2)}
   .topic-chip .emoji{font-size:16px}
 
   .turn-banner{display:flex; align-items:center; justify-content:center; gap:8px; font-weight:900; padding:10px 12px; border-radius:12px;
-    background:linear-gradient(135deg, rgba(122,162,255,.25), rgba(68,215,182,.18)); border:1px solid rgba(255,255,255,.15)}
+    background:linear-gradient(135deg, rgba(111,157,187,.18), rgba(200,164,77,.12)); border:1px solid rgba(26,44,66,.25); color:#1a2c42}
   .turn-banner .blink{animation: blink 1.2s steps(2,end) infinite}
   @keyframes blink { 50%{opacity:.35} }
 
-  /* My-turn glow on the board */
-  .myturn{ box-shadow: 0 0 0 3px rgba(68,215,182,.28) inset, 0 0 32px rgba(68,215,182,.18) }
+  /* My-turn border on the board */
+  .myturn{ box-shadow: 0 0 0 3px rgba(179,53,46,.18) inset, 0 0 0 2px rgba(179,53,46,.36); }
 
   /* Toast */
   .toast{position:fixed; top:18px; right:18px; z-index:99; display:flex; flex-direction:column; gap:8px}
-  .toast .t{background:#121a32; border:1px solid rgba(255,255,255,.18); padding:10px 12px; border-radius:12px; box-shadow: var(--glow); font-weight:800}
-  .t.ok{border-color: rgba(68,215,182,.5)}
-  .t.ng{border-color: rgba(255,107,107,.5)}
+  .toast .t{background:#fbfaf5; border:1px solid rgba(39,35,31,.18); padding:10px 12px; border-radius:12px; box-shadow: 0 6px 16px rgba(0,0,0,.08); font-weight:800; color:var(--ink)}
+  .t.ok{border-color: rgba(123,149,91,.6)}
+  .t.ng{border-color: rgba(160,75,75,.6)}
 
   /* Canvas overlay for confetti */
   #fx{position:fixed; inset:0; pointer-events:none; z-index:90}
@@ -126,19 +141,20 @@
 <div class="container">
   <header>
     <div class="logo">
-      <div class="logo-emoji">🎮✨</div>
+      <div class="logo-emoji">🎴🏮</div>
       <div>
         <h1>いろはに奔走</h1>
-        <div class="subtitle">友だちとワイワイ文字当て推理バトル</div>
+        <div class="subtitle">和趣でたのしむ 文字当て推理合戦</div>
       </div>
     </div>
   
   <button id="soundToggle" class="pill ghost" title="SE切替">🔊 SE ON</button>
   <button id="bgmToggle" class="pill ghost" title="BGM切替">🎵 BGM ON</button>
+  <input id="bgmVolume" type="range" min="0" max="100" value="50" title="BGM音量" style="vertical-align:middle;width:120px;">
 </header>
 
   <div id="app" class="grid"></div>
-  <p class="footer">君の笑顔は輝いていた</p>
+  <p class="footer">本日もご来場かたじけない</p>
 </div>
 <div class="toast" id="toast"></div>
 
@@ -174,12 +190,12 @@ function showToast(msg, ok=true){
   setTimeout(()=> wrap.removeChild(el), 1900);
 }
 
-/* Confetti */
+/* Confetti（和風の配色） */
 function confetti(duration=1800, pieces=140){
   const container = document.getElementById('fx');
   const canvas = document.createElement('canvas'); canvas.width=innerWidth; canvas.height=innerHeight; container.appendChild(canvas);
   const ctx = canvas.getContext('2d');
-  const colors = ['#7aa2ff','#ff72d2','#44d7b6','#ffd166','#e6ecff'];
+  const colors = ['#b3352e','#c8a44d','#1a2c42','#6f9dbb','#7b955b','#2a2622'];
   const P = Array.from({length:pieces}, ()=>({
     x: Math.random()*canvas.width,
     y: -20 - Math.random()*canvas.height*.3,
@@ -479,11 +495,11 @@ function renderLobby(){
     <div class="row"><label>ユーザー名</label><input id="name" placeholder="例：たろう" value="${state.name||''}" /></div>
     <div class="row"><label>ルームID</label><input id="room" placeholder="例：IROHA123" value="${room||''}" /></div>
     <div class="row">
-      <button class="primary" id="enter">🚪 入室 / 作成</button>
-      <span class="hint">友だちにルームIDをシェアしよう！</span>
+      <button class="primary" id="enter">入室 / 作成</button>
+      <span class="hint">友だちにルームIDをシェアしよう。</span>
     </div>
     <div class="panel">
-      <div class="hint"><strong>ルール要約：</strong>お題に沿った2〜7文字の言葉をひらがなで（濁点なし/小文字→大文字、足りない分×）。手番でボードの文字をクリックして攻撃。同じ文字があれば公開。成功ならもう1回だけ連撃OK。×以外が全公開で脱落、最後まで残った人が勝ち。</div>
+      <div class="hint"><strong>遊び方：</strong>お題に沿った2〜7文字の言葉をひらがなで（濁点なし/小文字→大文字、足りない分×）。手番でボードの文字をクリックして攻撃。同じ文字があれば公開。成功ならもう1回だけ連撃OK。×以外が全公開で脱落、最後まで残った人が勝ち。</div>
     </div>
   `;
   root.appendChild(panel);
@@ -497,64 +513,6 @@ function renderLobby(){
     subscribeRoom();
     state.screen = 'room'; render();
   };
-}
-
-function renderRoom(){
-  const root = $('#app'); root.innerHTML='';
-  const room = state.roomSnap?.val()||{};
-  const topicWrap = document.createElement('div');
-  topicWrap.className = 'panel';
-  topicWrap.innerHTML = `
-    <div class="hint">お題</div>
-    <div class="topic-chip"><span class="emoji">🎯</span><span>${room.topic || '（未設定）'}</span></div>
-    <div class="row" style="margin-top:10px">
-      <button id="pickTopic" class="ghost"${room.started?' disabled':''}>
-        ${room.topic ? '🎲 お題を再抽選' : '🎲 お題を抽選'}
-      </button>
-    </div>
-  `;
-  root.appendChild(topicWrap);
-  setTimeout(()=>{
-    const btn = document.getElementById('pickTopic');
-    if (btn) btn.onclick = ()=> setTopic(state.roomId);
-  });
-
-  const players = Object.entries(room.players||{});
-  const listPanel = document.createElement('div'); listPanel.className='panel';
-  const list = document.createElement('div'); list.className='players';
-  players.forEach(([pid,p])=>{
-    const d = document.createElement('div'); d.className='player';
-    d.innerHTML = `<span class="dot"></span><strong>${p.name}</strong> <span class="pill">${p.locked?'準備OK':'準備中'}</span>`;
-    list.appendChild(d);
-  });
-  listPanel.innerHTML = `<h3 style="margin:0 0 8px">入室中のプレイヤー</h3>`;
-  listPanel.appendChild(list);
-
-  const controls = document.createElement('div'); controls.className='row';
-  const wordWrap = document.createElement('div'); wordWrap.className='row';
-  wordWrap.innerHTML = `<input id="myword" placeholder="お題に沿って2〜7文字（例：さかな）" style="min-width:260px" /> <button id="lock" class="success">🔒 言葉をロック</button>`;
-  controls.appendChild(wordWrap);
-
-  const start = document.createElement('button'); start.textContent='▶ ゲームスタート'; start.className='primary';
-  start.onclick = ()=> startGame(state.roomId);
-  const back = document.createElement('button'); back.textContent='← ロビーへ'; back.className='ghost';
-  back.onclick = ()=>{ state.screen='lobby'; render(); };
-
-  const hint = document.createElement('div'); hint.className='hint';
-  hint.textContent = '全員が「言葉をロック」するとスタートできます。';
-
-  controls.appendChild(start); controls.appendChild(back);
-
-  listPanel.appendChild(controls);
-  listPanel.appendChild(hint);
-  root.appendChild(listPanel);
-
-  document.getElementById('lock').onclick = ()=>{
-    const raw = document.getElementById('myword').value;
-    lockWord(state.roomId, state.myUid, raw);
-  };
-
-  if (room.started) { state.screen='game'; render(); }
 }
 
 function cardNode(ch, revealed, isMe){
@@ -572,6 +530,62 @@ function cardNode(ch, revealed, isMe){
   div.textContent = hidden ? '？' : ch;
 
   return div;
+}
+
+function renderRoom(){
+  const root = $('#app'); root.innerHTML='';
+  const room = state.roomSnap?.val()||{};
+  const topicWrap = document.createElement('div');
+  topicWrap.className = 'panel';
+  topicWrap.innerHTML = `
+    <div class="hint">お題</div>
+    <div class="topic-chip"><span class="emoji">🎯</span><span>${room.topic || '（未設定）'}</span></div>
+    <div class="row" style="margin-top:10px">
+      <button id="pickTopic" class="ghost"${room.started?' disabled':''}>
+        ${room.topic ? 'お題を再抽選' : 'お題を抽選'}
+      </button>
+    </div>
+  `;
+  const players = Object.entries(room.players||{});
+  const listPanel = document.createElement('div'); listPanel.className='panel';
+  const list = document.createElement('div'); list.className='players';
+  players.forEach(([pid,p])=>{
+    const d = document.createElement('div'); d.className='player';
+    d.innerHTML = `<span class="dot"></span><strong>${p.name}</strong> <span class="pill">${p.locked?'準備OK':'準備中'}</span>`;
+    list.appendChild(d);
+  });
+  listPanel.innerHTML = `<h3 style="margin:0 0 8px">入室中の御方</h3>`;
+  listPanel.appendChild(list);
+
+  const controls = document.createElement('div'); controls.className='row';
+  const wordWrap = document.createElement('div'); wordWrap.className='row';
+  wordWrap.innerHTML = `<input id=\"myword\" placeholder=\"お題に沿って2〜7文字（例：さかな）\" style=\"min-width:260px\" /> <button id=\"lock\" class=\"success\">言葉をロック</button>`;
+  controls.appendChild(wordWrap);
+
+  const start = document.createElement('button'); start.textContent='▶ ゲームスタート'; start.className='primary';
+  start.onclick = ()=> startGame(state.roomId);
+  const back = document.createElement('button'); back.textContent='← ロビーへ'; back.className='ghost';
+  back.onclick = ()=>{ state.screen='lobby'; render(); };
+
+  const hint = document.createElement('div'); hint.className='hint';
+  hint.textContent = '全員が「言葉をロック」するとスタートできます。';
+
+  controls.appendChild(start); controls.appendChild(back);
+
+  listPanel.appendChild(controls);
+  listPanel.appendChild(hint);
+
+  const rootFrag = document.createDocumentFragment();
+  rootFrag.appendChild(topicWrap);
+  rootFrag.appendChild(listPanel);
+  root.appendChild(rootFrag);
+
+  document.getElementById('lock').onclick = ()=>{
+    const raw = document.getElementById('myword').value;
+    lockWord(state.roomId, state.myUid, raw);
+  };
+
+  if (room.started) { state.screen='game'; render(); }
 }
 
 function renderGame(){
@@ -592,18 +606,18 @@ function renderGame(){
   const top = document.createElement('div'); top.className='grid cols-3';
 
   const topic = document.createElement('div'); topic.className='panel';
-  topic.innerHTML = `<div class="hint">お題</div><div class="topic-chip"><span class="emoji">🎯</span><span>${room.topic||'—'}</span></div>`;
+  topic.innerHTML = `<div class=\"hint\">お題</div><div class=\"topic-chip\"><span class=\"emoji\">🎯</span><span>${room.topic||'—'}</span></div>`;
   top.appendChild(topic);
 
   const status = document.createElement('div'); status.className='panel';
   if (room.winnerUid){
-    status.innerHTML = `<h3 style="color:var(--ok); margin:0 0 6px">🏆 勝者：${room.players[room.winnerUid]?.name||'？？？'}</h3>`;
+    status.innerHTML = `<h3 style=\"color:var(--ok); margin:0 0 6px\">🏆 勝者：${room.players[room.winnerUid]?.name||'？？？'}</h3>`;
   }else{
-    status.innerHTML = `<div class="turn-banner"><span class="blink">⏳</span> 手番：<strong>${room.players[room.currentTurnUid]?.name||'—'}</strong> <span class="pill">${room.consec===1?'あと1回攻撃可':'最大2連まで'}</span></div>`;
+    status.innerHTML = `<div class=\"turn-banner\"><span class=\"blink\">⏳</span> 手番：<strong>${room.players[room.currentTurnUid]?.name||'—'}</strong> <span class=\"pill\">${room.consec===1?'あと1回攻撃可':'最大2連まで'}</span></div>`;
     if (room.lastAttack){
       const la = room.lastAttack;
       const who = room.players[la.by]?.name||'—';
-      status.innerHTML += `<div class="hint" style="margin-top:8px">直前：${who}「${la.kana}」→${la.success?'成功':'失敗'}</div>`;
+      status.innerHTML += `<div class=\"hint\" style=\"margin-top:8px\">直前：${who}「${la.kana}」→${la.success?'成功':'失敗'}</div>`;
 
       // Toast for new attack
       if (la.ts && la.ts !== state.lastSeenAttackTs){
@@ -633,7 +647,7 @@ function renderGame(){
 
   /* ボード */
   const boardWrap = document.createElement('div'); boardWrap.className='panel' + (myTurn ? ' myturn' : '');
-  boardWrap.innerHTML = `<h3 style="margin:0 0 8px">場のボード</h3>`;
+  boardWrap.innerHTML = `<h3 style=\"margin:0 0 8px\">場のボード</h3>`;
   const board = document.createElement('div'); board.className='board';
 
   const usedMap = room.used || {};
@@ -653,13 +667,13 @@ function renderGame(){
 
   /* 他プレイヤー */
   const others = document.createElement('div'); others.className='panel';
-  others.innerHTML = `<h3 style="margin:0 0 8px">他のプレイヤー</h3>`;
+  others.innerHTML = `<h3 style=\"margin:0 0 8px\">他の御方</h3>`;
   const list = document.createElement('div'); list.className='players';
   for (const [pid,p] of Object.entries(room.players||{})){
     if (pid===state.myUid) continue;
     const d = document.createElement('div'); d.className='player'+(p.dropped?'':'');
     if (room.currentTurnUid===pid && !room.winnerUid) d.classList.add('active');
-    d.innerHTML = `<span class="dot"></span><strong>${p.name}</strong> ${p.dropped?'<span class="pill">脱落</span>':''}`;
+    d.innerHTML = `<span class=\"dot\"></span><strong>${p.name}</strong> ${p.dropped?'<span class=\"pill\">脱落</span>':''}`;
     const hand = document.createElement('div'); hand.className='cards';
     (p.word||[]).forEach((ch,i)=>{ hand.appendChild(cardNode(ch, (p.revealed||[])[i], false)); });
     d.appendChild(hand);
@@ -670,7 +684,7 @@ function renderGame(){
 
   /* 自分の手札 */
   const mine = document.createElement('div'); mine.className='panel';
-  mine.innerHTML = `<h3 style="margin:0 0 8px">自分の手札</h3>`;
+  mine.innerHTML = `<h3 style=\"margin:0 0 8px\">自分の手札</h3>`;
   const myhand = document.createElement('div'); myhand.className='cards me';
   (me.word||[]).forEach((ch,i)=>{ myhand.appendChild(cardNode(ch, (me.revealed||[])[i], true)); });
   mine.appendChild(myhand);
@@ -922,6 +936,61 @@ const BGM = (function(){
       b.addEventListener('click', ()=> BGM.toggle());
     }
   });
+})();
+</script>
+
+
+<script>
+// Initialize BGM volume slider
+document.addEventListener('DOMContentLoaded', ()=>{
+  const vol = document.getElementById('bgmVolume');
+  if (vol){
+    // load saved volume or default 0.5
+    const saved = parseFloat(localStorage.getItem('irohani_bgm_volume'));
+    let v = (!isNaN(saved)? saved: 0.5);
+    vol.value = Math.round(v*100);
+    BGM.setVolume(v);
+    vol.addEventListener('input', ()=>{
+      const val = vol.value/100;
+      BGM.setVolume(val);
+      localStorage.setItem('irohani_bgm_volume', val.toFixed(2));
+    });
+  }
+});
+</script>
+
+
+<script>
+// === BGM Volume Slider wiring (persist to localStorage, live update) ===
+(function(){
+  const KEY = 'irohani_bgm_vol';
+  function clamp01(x){ return Math.max(0, Math.min(1, x)); }
+  document.addEventListener('DOMContentLoaded', ()=>{
+    const el = document.getElementById('bgmVolume');
+    if (!el) return;
+    // restore
+    let v = parseFloat(localStorage.getItem(KEY));
+    if (isNaN(v)) v = 0.5; // default
+    try{ BGM.setVolume(clamp01(v)); }catch(e){}
+    el.value = Math.round(clamp01(v) * 100);
+    // listen
+    el.addEventListener('input', (ev)=>{
+      const val = clamp01(parseInt(ev.target.value,10) / 100);
+      try{ BGM.setVolume(val); }catch(e){}
+      localStorage.setItem(KEY, String(val));
+    });
+  });
+})();
+</script>
+
+
+<script>
+// Initialize BGM volume early if possible
+(function(){
+  const KEY = 'irohani_bgm_vol';
+  let v = parseFloat(localStorage.getItem(KEY));
+  if (isNaN(v)) v = 0.5;
+  try{ BGM.setVolume(Math.max(0, Math.min(1, v))); }catch(e){}
 })();
 </script>
 
