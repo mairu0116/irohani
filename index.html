@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>いろはに奔走 — Pop Remix</title>
+<title>いろはに奔走 - みんなで楽しく文字当てゲーム！</title>
 <link href="https://fonts.googleapis.com/css2?family=Bangers&family=M+PLUS+Rounded+1c:wght@400;700;900&display=swap" rel="stylesheet">
 <style>
   /* ===== Theme (brighter, pop, playful) ===== */
@@ -129,13 +129,15 @@
       <div class="logo-emoji">🎮✨</div>
       <div>
         <h1>いろはに奔走</h1>
-        <div class="subtitle">もっとポップに！ 友だちとワイワイ推理バトル</div>
+        <div class="subtitle">友だちとワイワイ文字当て推理バトル</div>
       </div>
     </div>
-  </header>
+  
+  <button id="soundToggle" class="pill ghost" title="SE切替">🔊 SE ON</button>
+</header>
 
   <div id="app" class="grid"></div>
-  <p class="footer">心変わりがあったっていいじゃない</p>
+  <p class="footer">君の笑顔は輝いていた</p>
 </div>
 <div class="toast" id="toast"></div>
 
@@ -700,5 +702,149 @@ function render(){
   }
 })();
 </script>
+
+<script>
+/* === Sound Effects system: mp3→wav fallback, mute toggle, autoplay unlock, hooks === */
+const SILENT_WAV = "data:audio/wav;base64,UklGRiYAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQIAAAAAAA==";
+
+const Sound = {
+  master: 0.7,
+  enabled: localStorage.getItem('irohani_se') !== 'off',
+  unlockOnce: false,
+  setEnabled(v){
+    this.enabled = v;
+    localStorage.setItem('irohani_se', v ? 'on' : 'off');
+    const b = document.getElementById('soundToggle');
+    if (b) b.textContent = v ? '🔊 SE ON' : '🔇 SE OFF';
+  },
+  toggle(){ this.setEnabled(!this.enabled); },
+  unlock(){
+    if (this.unlockOnce) return;
+    this.unlockOnce = true;
+    const a = new Audio(SILENT_WAV);
+    a.volume = 0.001;
+    a.play().catch(()=>{});
+  }
+};
+
+function makeTone(name, volume=1){
+  const sources = [`se/${name}.mp3`, `se/${name}.wav`];
+  const pool = [];
+  function getAudio(){
+    let a = pool.find(x => x.ended || x.paused);
+    if (!a){
+      a = new Audio(sources[0]); a.preload = 'auto';
+      a.addEventListener('error', ()=>{
+        if (a.src.indexOf('.mp3') !== -1) a.src = sources[1];
+      }, { once:true });
+      pool.push(a);
+    }
+    a.volume = volume * Sound.master;
+    return a;
+  }
+  return { play(){ if (!Sound.enabled) return; const a=getAudio(); a.currentTime=0; a.play().catch(()=>{});} };
+}
+
+const SE = {
+  click: makeTone('click', 0.9),
+  start: makeTone('start', 1.0),
+  lock:  makeTone('lock',  1.0),
+  hit:   makeTone('hit',   1.0),
+  miss:  makeTone('miss',  0.9),
+  win:   makeTone('win',   1.0),
+};
+
+// Unlock on first user interaction
+window.addEventListener('pointerdown', ()=> Sound.unlock(), { once:true });
+
+// Initialize toggle button
+document.addEventListener('DOMContentLoaded', ()=>{
+  const b = document.getElementById('soundToggle');
+  if (b){
+    b.textContent = Sound.enabled ? '🔊 SE ON' : '🔇 SE OFF';
+    b.addEventListener('click', ()=> Sound.toggle());
+  }
+});
+
+// Hook into existing functions & DOM after each render
+(function(){
+  const _render = window.render;
+  if (typeof _render === 'function'){
+    window.render = function(){
+      const r = _render.apply(this, arguments);
+      setTimeout(hookSEDOM, 0);
+      return r;
+    };
+  } else {
+    // Fallback: still try to hook DOM once after load
+    window.addEventListener('load', ()=> setTimeout(hookSEDOM, 0));
+  }
+
+  // Wrap startGame / restart to play SFX
+  if (typeof window.startGame === 'function'){
+    const _startGame = window.startGame;
+    window.startGame = function(){
+      try{ SE.start.play(); }catch(e){}
+      return _startGame.apply(this, arguments);
+    };
+  }
+  if (typeof window.restart === 'function'){
+    const _restart = window.restart;
+    window.restart = function(){
+      try{ SE.click.play(); }catch(e){}
+      return _restart.apply(this, arguments);
+    };
+  }
+
+  // Wrap showToast to infer hit/miss SFX
+  if (typeof window.showToast === 'function'){
+    const _showToast = window.showToast;
+    window.showToast = function(msg){
+      try{
+        const s = String(msg||'');
+        if (/[成功|🎯|あたり]/.test(s)) SE.hit.play();
+        else if (/[失敗|はずれ|💥]/.test(s)) SE.miss.play();
+      }catch(e){}
+      return _showToast.apply(this, arguments);
+    };
+  }
+
+  // Wrap confetti for win SFX
+  if (typeof window.confetti === 'function'){
+    const _confetti = window.confetti;
+    window.confetti = function(){
+      try{ SE.win.play(); }catch(e){}
+      return _confetti.apply(this, arguments);
+    };
+  }
+
+  function hookSEDOM(){
+    // Generic buttons
+    const enter = document.getElementById('enter');
+    if (enter && !enter._seBound){
+      enter.addEventListener('click', ()=> SE.click.play());
+      enter._seBound = true;
+    }
+    const pick = document.getElementById('pickTopic');
+    if (pick && !pick._seBound){
+      pick.addEventListener('click', ()=> SE.click.play());
+      pick._seBound = true;
+    }
+    const lockBtn = document.getElementById('lock');
+    if (lockBtn && !lockBtn._seBound){
+      lockBtn.addEventListener('click', ()=> SE.lock.play());
+      lockBtn._seBound = true;
+    }
+    // Tiles (best-effort)
+    document.querySelectorAll('.tile, [data-tile]').forEach(el=>{
+      if (!el._seBound){
+        el.addEventListener('click', ()=> SE.click.play(), { capture:true });
+        el._seBound = true;
+      }
+    });
+  }
+})();
+</script>
+
 </body>
 </html>
