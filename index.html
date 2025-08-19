@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>いろはに奔走 - みんなで楽しく文字当てゲーム！</title>
-<link href="https://fonts.googleapis.com/css2?family=Mochiy+Pop+One&family=Potta+One&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bangers&family=M+PLUS+Rounded+1c:wght@400;700;900&display=swap" rel="stylesheet">
 <style>
   /* ===== Theme (brighter, pop, playful) ===== */
   :root{
@@ -134,10 +134,11 @@
     </div>
   
   <button id="soundToggle" class="pill ghost" title="SE切替">🔊 SE ON</button>
+  <button id="bgmToggle" class="pill ghost" title="BGM切替">🎵 BGM ON</button>
 </header>
 
   <div id="app" class="grid"></div>
-  <p class="footer">空を見上げて涙をこらえる</p>
+  <p class="footer">君の笑顔は輝いていた</p>
 </div>
 <div class="toast" id="toast"></div>
 
@@ -843,6 +844,84 @@ document.addEventListener('DOMContentLoaded', ()=>{
       }
     });
   }
+})();
+</script>
+
+
+<script>
+/* === BGM Controller: looping music with mp3→wav fallback & toggle === */
+const BGM = (function(){
+  const sources = ['bgm/theme.mp3', 'bgm/theme.wav'];
+  let audio = null;
+  let ready = false;
+
+  function ensure(){
+    if (audio) return audio;
+    audio = new Audio(sources[0]);
+    audio.loop = true;
+    audio.preload = 'auto';
+    audio.volume = 0.5;
+    audio.addEventListener('error', ()=>{
+      if (audio && audio.src.indexOf('.mp3') !== -1) audio.src = sources[1];
+    }, { once:true });
+    return audio;
+  }
+
+  function playSafely(){
+    try{
+      ensure();
+      return audio.play();
+    }catch(e){ return Promise.reject(e); }
+  }
+
+  const api = {
+    enabled: localStorage.getItem('irohani_bgm') !== 'off',
+    setEnabled(v){
+      this.enabled = v;
+      localStorage.setItem('irohani_bgm', v ? 'on' : 'off');
+      const b = document.getElementById('bgmToggle');
+      if (b) b.textContent = v ? '🎵 BGM ON' : '🔕 BGM OFF';
+      if (!audio) ensure();
+      if (v){
+        // try play, will only work after user interaction due to autoplay policy
+        playSafely().catch(()=>{});
+      }else{
+        try{ audio.pause(); }catch(e){}
+      }
+    },
+    toggle(){ this.setEnabled(!this.enabled); },
+    _unlock(){
+      if (!audio) ensure();
+      if (this.enabled){
+        playSafely().catch(()=>{});
+      }
+    },
+    setVolume(x){
+      ensure();
+      audio.volume = Math.max(0, Math.min(1, x));
+    }
+  };
+  return api;
+})();
+
+// Hook unlock with existing Sound.unlock
+(function(){
+  const _unlock = Sound.unlock;
+  Sound.unlock = function(){
+    const r = _unlock.apply(Sound, arguments);
+    // start bgm if enabled
+    try{ BGM._unlock(); }catch(e){}
+    return r;
+  };
+
+  // Init toggle button
+  document.addEventListener('DOMContentLoaded', ()=>{
+    const b = document.getElementById('bgmToggle');
+    if (b){
+      b.textContent = BGM.enabled ? '🎵 BGM ON' : '🔕 BGM OFF';
+      b.addEventListener('click', ()=> BGM.toggle());
+    }
+  });
 })();
 </script>
 
