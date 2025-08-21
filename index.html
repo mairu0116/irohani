@@ -8,41 +8,27 @@
 <style>
   /* ===== 和風テーマ（紙・墨・藍・朱・金） ===== */
   :root{
-    --paper:#f7f4e9;        /* 和紙 */
-    --paper2:#f2efe6;       /* 和紙影 */
-    --ink:#27231f;          /* 墨色 */
-    --muted:#6f675f;        /* 落ち着き */
-    --indigo:#1a2c42;       /* 藍色 */
-    --vermilion:#b3352e;    /* 朱色 */
-    --asagi:#6f9dbb;        /* 浅葱 */
-    --gold:#c8a44d;         /* 金 */
-    --ok:#7b955b;           /* 萌黄 */
-    --warn:#b58b3a;         /* 朽葉 */
-    --err:#a04b4b;          /* 紅樺 */
+    --paper:#f7f4e9; --paper2:#f2efe6; --ink:#27231f; --muted:#6f675f;
+    --indigo:#1a2c42; --vermilion:#b3352e; --asagi:#6f9dbb; --gold:#c8a44d;
+    --ok:#7b955b; --warn:#b58b3a; --err:#a04b4b;
   }
-
-  *{box-sizing:border-box}
-  html,body{height:100%}
+  *{box-sizing:border-box} html,body{height:100%}
   body{
     margin:0; color:var(--ink);
-    font-family:"Shippori Mincho B1", "Hiragino Mincho ProN", "Yu Mincho", "Noto Serif JP", serif;
+    font-family:"Shippori Mincho B1","Hiragino Mincho ProN","Yu Mincho","Noto Serif JP",serif;
     background:
       radial-gradient(1100px 780px at 10% -10%, rgba(26,44,66,.06) 0%, transparent 60%),
       radial-gradient(900px 700px at 110% 20%, rgba(179,53,46,.05) 0%, transparent 60%),
       linear-gradient(180deg, var(--paper) 0%, var(--paper2) 100%);
     overflow-x:hidden;
   }
-
-  /* 細かな小紋風パターン（極薄） */
   .bg-dots::before{
     content:""; position:fixed; inset:0; pointer-events:none; opacity:.14; mix-blend-mode:multiply;
     background:
       radial-gradient(closest-side, rgba(26,44,66,.10) 80%, transparent 81%) 0 0/32px 32px,
       radial-gradient(closest-side, rgba(26,44,66,.10) 80%, transparent 81%) 16px 16px/32px 32px;
   }
-
   .container{max-width:1100px;margin:0 auto;padding:24px}
-
   header{display:flex; align-items:center; justify-content:space-between; gap:12px; margin:4px 0 16px}
   .logo{display:flex; gap:12px; align-items:center}
   .logo-emoji{font-size:26px; filter: drop-shadow(0 1px 0 rgba(255,255,255,.6));}
@@ -51,7 +37,6 @@
     background: linear-gradient(90deg, var(--vermilion), rgba(179,53,46,.45));}
   .subtitle{margin-top:4px; color:var(--muted); font-size:12px}
 
-  /* 紙の面（panel） */
   .panel{
     background:
       linear-gradient(180deg, rgba(255,255,255,.6), rgba(255,255,255,.35)),
@@ -59,7 +44,6 @@
     border:1px solid rgba(39,35,31,.22); border-radius:14px; padding:16px; margin:12px 0;
     box-shadow: 0 2px 0 rgba(0,0,0,.04), 0 8px 24px rgba(0,0,0,.06);
   }
-
   .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
   .grid{display:grid;gap:14px}
   .cols-2{grid-template-columns:1fr 1fr}
@@ -86,7 +70,6 @@
   .dot{width:10px;height:10px;border-radius:50%; background:linear-gradient(180deg,var(--vermilion),#e08378); box-shadow:0 0 0 2px rgba(179,53,46,.18)}
   @keyframes bump{0%{transform:scale(1)}30%{transform:scale(1.06)}100%{transform:scale(1)}}
 
-  /* 五十音ボード：木札風 */
   .board{display:grid;grid-template-columns:repeat(10,1fr);gap:8px}
   .tile{position:relative; padding:12px 0;text-align:center;border:1px solid rgba(39,35,31,.22);border-radius:10px;user-select:none;
         background:linear-gradient(180deg,#f0e5cf,#e5d1a0); font-weight:900; letter-spacing:.12em; color:#2a2622;
@@ -99,7 +82,6 @@
   .tile.used::after{content:"済"; position:absolute; inset:auto 6px 6px auto; font-size:11px; padding:3px 7px; border-radius:999px; background:#fff2ef; color:var(--vermilion);
     border:1px solid rgba(179,53,46,.45); box-shadow: inset 0 0 0 2px rgba(179,53,46,.12)}
 
-  /* 手札：札風 */
   .cards{display:flex;gap:10px;flex-wrap:wrap}
   .card{width:52px;height:74px;border-radius:12px;border:1px solid rgba(39,35,31,.22);display:flex;align-items:center;justify-content:center;
         background:linear-gradient(180deg,#fff8e9,#f1e3cc);position:relative; box-shadow: 0 6px 18px rgba(0,0,0,.16); font-weight:900; color:var(--ink)}
@@ -123,17 +105,18 @@
   .turn-banner .blink{animation: blink 1.2s steps(2,end) infinite}
   @keyframes blink { 50%{opacity:.35} }
 
-  /* My-turn border on the board */
   .myturn{ box-shadow: 0 0 0 3px rgba(179,53,46,.18) inset, 0 0 0 2px rgba(179,53,46,.36); }
 
-  /* Toast */
   .toast{position:fixed; top:18px; right:18px; z-index:99; display:flex; flex-direction:column; gap:8px}
   .toast .t{background:#fbfaf5; border:1px solid rgba(39,35,31,.18); padding:10px 12px; border-radius:12px; box-shadow: 0 6px 16px rgba(0,0,0,.08); font-weight:800; color:var(--ink)}
   .t.ok{border-color: rgba(123,149,91,.6)}
   .t.ng{border-color: rgba(160,75,75,.6)}
 
-  /* Canvas overlay for confetti */
   #fx{position:fixed; inset:0; pointer-events:none; z-index:90}
+
+  /* 本人だけ表示するロック済み単語の枠 */
+  .secret-panel{border:2px dashed rgba(200,164,77,.7); background:rgba(255,255,240,.6)}
+  .secret-title{font-weight:900; color:var(--indigo); margin-bottom:6px}
 </style>
 </head>
 <body class="bg-dots">
@@ -144,7 +127,7 @@
       <div class="logo-emoji">🎴🏮</div>
       <div>
         <h1>いろはに奔走</h1>
-        <div class="subtitle">おし～っこの倫理観</div>
+        <div class="subtitle">熱を奪う缶バッジが大量発生！</div>
       </div>
     </div>
   
@@ -158,7 +141,7 @@
 </div>
 <div class="toast" id="toast"></div>
 
-<!-- Firebase CDN（あなたのプロジェクトの設定に差し替え） -->
+<!-- Firebase CDN -->
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
 <script>
@@ -190,7 +173,7 @@ function showToast(msg, ok=true){
   setTimeout(()=> wrap.removeChild(el), 1900);
 }
 
-/* Confetti（和風の配色） */
+/* Confetti */
 function confetti(duration=1800, pieces=140){
   const container = document.getElementById('fx');
   const canvas = document.createElement('canvas'); canvas.width=innerWidth; canvas.height=innerHeight; container.appendChild(canvas);
@@ -216,7 +199,7 @@ function confetti(duration=1800, pieces=140){
   requestAnimationFrame(tick);
 }
 
-/* ひらがな正規化：濁点/半濁点なし、小→大、スペース除去 */
+/* ひらがな正規化 */
 const mapDakuten = Object.fromEntries([
   ['が','か'],['ぎ','き'],['ぐ','く'],['げ','け'],['ご','こ'],
   ['ざ','さ'],['じ','し'],['ず','す'],['ぜ','せ'],['ぞ','そ'],
@@ -236,33 +219,25 @@ function normWord(input){
   let s = (input||'').toString().trim();
   s = toHiragana(s);
   s = s.replace(/\s+/g,'');
-  // 1文字ずつ変換
   let out = [];
   for (const ch of s){
     if (mapDakuten[ch]) out.push(mapDakuten[ch]);
     else if (mapSmall[ch]) out.push(mapSmall[ch]);
     else out.push(ch);
   }
-  // ひらがなのみ＆伸ばし棒「ー」はOK
   out = out.filter(c => /[ぁ-んー]/.test(c));
-  // 2〜7に収める
   if (out.length < 2 || out.length > 7) return null;
   while(out.length < 7) out.push('×');
   return out;
 }
 
-/* 五十音ボード（＋伸ばし棒） */
+/* 五十音ボード */
 const BOARD = [
-  'あ','い','う','え','お',
-  'か','き','く','け','こ',
-  'さ','し','す','せ','そ',
-  'た','ち','つ','て','と',
-  'な','に','ぬ','ね','の',
-  'は','ひ','ふ','へ','ほ',
-  'ま','み','む','め','も',
-  'や','ゆ','よ','ら','り',
-  'る','れ','ろ','わ','を',
-  'ん','ー'
+  'あ','い','う','え','お','か','き','く','け','こ',
+  'さ','し','す','せ','そ','た','ち','つ','て','と',
+  'な','に','ぬ','ね','の','は','ひ','ふ','へ','ほ',
+  'ま','み','む','め','も','や','ゆ','よ','ら','り',
+  'る','れ','ろ','わ','を','ん','ー'
 ];
 
 /* お題 */
@@ -289,6 +264,7 @@ async function setTopic(roomId){
   const topic = TOPICS[Math.floor(Math.random()*TOPICS.length)];
   await db.ref(`rooms/${roomId}/topic`).set(topic);
 }
+
 /* ▼ 入力中ドラフトの保存/復元 */
 function draftKey(roomId, uid){ return `irohani_draft_${roomId}_${uid}`; }
 function getDraft(roomId, uid){
@@ -303,7 +279,7 @@ function clearDraft(roomId, uid){
 
 /* 状態 */
 const state = {
-  screen: 'lobby', // lobby | room | game
+  screen: 'lobby',
   roomId: '',
   myUid: uid(),
   name: '',
@@ -317,7 +293,7 @@ const state = {
 rooms/{roomId} = {
   createdAt, started, topic, currentTurnUid, consec, winnerUid,
   players: {
-    uid: { name, word: ['あ','い',...,'×'], revealed: [false..], locked: false, dropped: false, joinedAt }
+    uid: { name, word: ['あ',..,'×'], revealed: [false..], locked: false, dropped: false, raw: "..." }
   },
   lastAttack: { by, kana, success, ts }
 }
@@ -333,7 +309,7 @@ async function joinRoom(roomId, name){
     });
   }
   await db.ref(`rooms/${roomId}/players/${state.myUid}`).set({
-    name, word:[], revealed:[], locked:false, dropped:false, joinedAt: now()
+    name, word:[], revealed:[], locked:false, dropped:false, raw:'', joinedAt: now()
   });
   return ref;
 }
@@ -354,8 +330,9 @@ function subscribeRoom(){
 async function lockWord(roomId, uid, raw){
   const word = normWord(raw);
   if (!word){ alert('2〜7文字のひらがなで入力してください（濁点/半濁点なし、小文字は大文字化、伸ばし棒OK）'); return; }
+  const rawNormalized = word.filter(ch => ch!=='×').join('');
   await db.ref(`rooms/${roomId}/players/${uid}`).update({
-    word, revealed: new Array(word.length).fill(false), locked:true, dropped:false
+    word, revealed: new Array(word.length).fill(false), locked:true, dropped:false, raw: rawNormalized
   });
 }
 
@@ -371,7 +348,6 @@ async function startGame(roomId){
     const allLocked = Object.values(ps).every(p=>p.locked && (p.word||[]).length===7);
     if (!(ok2p && allLocked)) return room;
 
-    // ★ お題が未設定ならここで最終決定
     if (!room.topic){
       room.topic = TOPICS[Math.floor(Math.random()*TOPICS.length)];
     }
@@ -382,14 +358,14 @@ async function startGame(roomId){
     room.started = true;
     room.winnerUid = null;
     room.lastAttack = null;
-    room.used = {}; // 例: { 'あ': true, 'か': true, ... }
+    room.used = {};
     for (const [pid,p] of Object.entries(ps)) p.dropped = false;
     
     started = true;
     return room;
   });
   if (!started && reason) alert(reason);
-  state.didConfetti = false; // reset visual
+  state.didConfetti = false;
 }
 
 /* 手番を次へ */
@@ -423,13 +399,11 @@ async function attack(roomId, byUid, kana){
     if (!BOARD.includes(kana)) return room;
 
     room.used = room.used || {};
-    if (room.used[kana]) return room;   // 既に使われていたら無視
+    if (room.used[kana]) return room;
 
-    // ★ ここで使用済みに
     room.used[kana] = true;
 
     let hit = false;
-    // 全員分公開処理（自爆もここで）
     for (const [pid,p] of Object.entries(room.players||{})){
       const w = p.word||[];
       const r = p.revealed||[];
@@ -441,18 +415,15 @@ async function attack(roomId, byUid, kana){
       p.revealed = r;
     }
 
-    // 脱落/勝者判定
     checkDropAndWinner(room);
 
-    // 連撃/手番遷移
     if (!hit){
       room.consec = 0;
       room.currentTurnUid = nextAliveUid(room);
     }else{
       if (room.consec===0){
-        room.consec = 1; // もう1回
+        room.consec = 1;
       }else{
-        // 2回目を終えたら終了
         room.consec = 0;
         room.currentTurnUid = nextAliveUid(room);
       }
@@ -463,24 +434,32 @@ async function attack(roomId, byUid, kana){
   });
 }
 
-/* リスタート（同じ面子で再戦） */
+/* リスタート */
 async function restart(roomId){
   await db.ref(`rooms/${roomId}`).transaction(room=>{
     if (!room) return room;
     const ps = room.players||{};
     for (const [pid,p] of Object.entries(ps)){
-      p.word=[]; p.revealed=[]; p.locked=false; p.dropped=false;
+      p.word=[]; p.revealed=[]; p.locked=false; p.dropped=false; p.raw='';
     }
     room.started=false; room.topic=null; room.currentTurnUid=null; room.consec=0; room.winnerUid=null; room.lastAttack=null;
-    room.consec=0; room.winnerUid=null; room.lastAttack=null;
     room.used = {};    
     return room;
   });
-  state.didConfetti = false; // visual reset
+  state.didConfetti = false;
 }
 
 /* 画面描画 */
 const $ = s => document.querySelector(s);
+
+function cardNode(ch, revealed, isMe){
+  const hidden = !revealed && !isMe;
+  const div = document.createElement('div');
+  const showXStyle = (ch === '×') && (isMe || revealed);
+  div.className = 'card' + (showXStyle ? ' x' : '') + (revealed ? ' revealed' : '') + (hidden ? ' hidden' : '');
+  div.textContent = hidden ? '？' : ch;
+  return div;
+}
 
 function renderLobby(){
   const root = $('#app'); root.innerHTML='';
@@ -515,26 +494,11 @@ function renderLobby(){
   };
 }
 
-function cardNode(ch, revealed, isMe){
-  const hidden = !revealed && !isMe;        // 相手かつ未公開なら隠す
-  const div = document.createElement('div');
-  const showXStyle = (ch === '×') && (isMe || revealed);
-
-  div.className =
-    'card' +
-    (showXStyle ? ' x' : '') +
-    (revealed ? ' revealed' : '') +
-    (hidden ? ' hidden' : '');
-
-  // 相手未公開は常に？表示
-  div.textContent = hidden ? '？' : ch;
-
-  return div;
-}
-
 function renderRoom(){
   const root = $('#app'); root.innerHTML='';
   const room = state.roomSnap?.val()||{};
+  const me = (room.players||{})[state.myUid] || {};
+
   const topicWrap = document.createElement('div');
   topicWrap.className = 'panel';
   topicWrap.innerHTML = `
@@ -546,6 +510,7 @@ function renderRoom(){
       </button>
     </div>
   `;
+
   const players = Object.entries(room.players||{});
   const listPanel = document.createElement('div'); listPanel.className='panel';
   const list = document.createElement('div'); list.className='players';
@@ -557,34 +522,73 @@ function renderRoom(){
   listPanel.innerHTML = `<h3 style="margin:0 0 8px">入室中の御方</h3>`;
   listPanel.appendChild(list);
 
+  // === 入力とロック操作 ===
   const controls = document.createElement('div'); controls.className='row';
   const wordWrap = document.createElement('div'); wordWrap.className='row';
-  wordWrap.innerHTML = `<input id=\"myword\" placeholder=\"お題に沿って2〜7文字（例：さかな）\" style=\"min-width:260px\" /> <button id=\"lock\" class=\"success\">言葉をロック</button>`;
+
+  // 入力欄とボタン（ロック済みなら無効化）
+  wordWrap.innerHTML = `
+    <input id="myword" placeholder="お題に沿って2〜7文字（例：さかな）" style="min-width:260px" ${me.locked?'disabled':''} />
+    <button id="lock" class="success" ${me.locked?'disabled':''}>言葉をロック</button>
+  `;
   controls.appendChild(wordWrap);
 
+  // ゲーム開始・戻る
   const start = document.createElement('button'); start.textContent='▶ ゲームスタート'; start.className='primary';
   start.onclick = ()=> startGame(state.roomId);
   const back = document.createElement('button'); back.textContent='← ロビーへ'; back.className='ghost';
   back.onclick = ()=>{ state.screen='lobby'; render(); };
-
   const hint = document.createElement('div'); hint.className='hint';
   hint.textContent = '全員が「言葉をロック」するとスタートできます。';
 
   controls.appendChild(start); controls.appendChild(back);
-
   listPanel.appendChild(controls);
   listPanel.appendChild(hint);
+
+  // 本人だけにロック済み単語を掲示
+  if (me.locked && (me.word||[]).length){
+    const secret = document.createElement('div');
+    secret.className = 'panel secret-panel';
+    const joined = (me.word||[]).filter(ch=>ch!=='×').join('');
+    secret.innerHTML = `
+      <div class="secret-title">🔒 あなたのロック済み単語（自分にだけ表示）</div>
+      <div class="cards me" id="myLockedCards"></div>
+      <div class="hint">確認用：<strong>${joined||'(未設定)'}</strong></div>
+    `;
+    setTimeout(()=>{
+      const wrap = document.getElementById('myLockedCards');
+      (me.word||[]).forEach((ch,i)=> wrap && wrap.appendChild(cardNode(ch, true, true)));
+    },0);
+    listPanel.appendChild(secret);
+  }
 
   const rootFrag = document.createDocumentFragment();
   rootFrag.appendChild(topicWrap);
   rootFrag.appendChild(listPanel);
   root.appendChild(rootFrag);
 
-  document.getElementById('lock').onclick = ()=>{
-    const raw = document.getElementById('myword').value;
-    lockWord(state.roomId, state.myUid, raw);
-  };
-  // ✅ お題抽選ボタンの挙動（未開始時のみ押下可）
+  // === ドラフト自動復元＆保存 ===
+  const inputEl = document.getElementById('myword');
+  if (inputEl){
+    // 再描画時も消えないよう、常に復元
+    inputEl.value = getDraft(state.roomId, state.myUid);
+    inputEl.addEventListener('input', (e)=> setDraft(state.roomId, state.myUid, e.target.value));
+  }
+
+  // ロック処理
+  const lockBtn = document.getElementById('lock');
+  if (lockBtn){
+    lockBtn.onclick = ()=>{
+      const raw = document.getElementById('myword').value;
+      lockWord(state.roomId, state.myUid, raw).then(()=>{
+        clearDraft(state.roomId, state.myUid);
+        if (inputEl){ inputEl.value=''; inputEl.disabled = true; }
+        lockBtn.disabled = true;
+      });
+    };
+  }
+
+  // お題ボタン
   const pickBtn = document.getElementById('pickTopic');
   if (pickBtn && !room.started){ pickBtn.onclick = ()=> setTopic(state.roomId); }
 
@@ -595,7 +599,6 @@ function renderGame(){
   const root = $('#app'); root.innerHTML='';
   const room = state.roomSnap?.val(); if (!room) return;
 
-  // 未開始ならルーム画面へ戻す
   if (!room.started) {
     state.screen = 'room';
     render();
@@ -605,24 +608,21 @@ function renderGame(){
   const me = (room.players||{})[state.myUid]||{};
   const myTurn = room.currentTurnUid===state.myUid && !room.winnerUid;
 
-  /* 上段：お題・ステータス・操作 */
   const top = document.createElement('div'); top.className='grid cols-3';
 
   const topic = document.createElement('div'); topic.className='panel';
-  topic.innerHTML = `<div class=\"hint\">お題</div><div class=\"topic-chip\"><span class=\"emoji\">🎯</span><span>${room.topic||'—'}</span></div>`;
+  topic.innerHTML = `<div class="hint">お題</div><div class="topic-chip"><span class="emoji">🎯</span><span>${room.topic||'—'}</span></div>`;
   top.appendChild(topic);
 
   const status = document.createElement('div'); status.className='panel';
   if (room.winnerUid){
-    status.innerHTML = `<h3 style=\"color:var(--ok); margin:0 0 6px\">🏆 勝者：${room.players[room.winnerUid]?.name||'？？？'}</h3>`;
+    status.innerHTML = `<h3 style="color:var(--ok); margin:0 0 6px">🏆 勝者：${room.players[room.winnerUid]?.name||'？？？'}</h3>`;
   }else{
-    status.innerHTML = `<div class=\"turn-banner\"><span class=\"blink\">⏳</span> 手番：<strong>${room.players[room.currentTurnUid]?.name||'—'}</strong> <span class=\"pill\">${room.consec===1?'あと1回攻撃可':'最大2連まで'}</span></div>`;
+    status.innerHTML = `<div class="turn-banner"><span class="blink">⏳</span> 手番：<strong>${room.players[room.currentTurnUid]?.name||'—'}</strong> <span class="pill">${room.consec===1?'あと1回攻撃可':'最大2連まで'}</span></div>`;
     if (room.lastAttack){
       const la = room.lastAttack;
       const who = room.players[la.by]?.name||'—';
-      status.innerHTML += `<div class=\"hint\" style=\"margin-top:8px\">直前：${who}「${la.kana}」→${la.success?'成功':'失敗'}</div>`;
-
-      // Toast & SFX for new attack
+      status.innerHTML += `<div class="hint" style="margin-top:8px">直前：${who}「${la.kana}」→${la.success?'成功':'失敗'}</div>`;
       if (la.ts && la.ts !== state.lastSeenAttackTs){
         state.lastSeenAttackTs = la.ts;
         showToast(`${who} が「${la.kana}」を宣言 — ${la.success? '🎯 あたり！' : '💥 はずれ…'}`, la.success);
@@ -650,11 +650,10 @@ function renderGame(){
 
   /* ボード */
   const boardWrap = document.createElement('div'); boardWrap.className='panel' + (myTurn ? ' myturn' : '');
-  boardWrap.innerHTML = `<h3 style=\"margin:0 0 8px\">場のボード</h3>`;
+  boardWrap.innerHTML = `<h3 style="margin:0 0 8px">場のボード</h3>`;
   const board = document.createElement('div'); board.className='board';
 
   const usedMap = room.used || {};
-
   BOARD.forEach(k=>{
     const already = !!usedMap[k];
     const canClick = myTurn && !already;
@@ -670,13 +669,13 @@ function renderGame(){
 
   /* 他プレイヤー */
   const others = document.createElement('div'); others.className='panel';
-  others.innerHTML = `<h3 style=\"margin:0 0 8px\">他の御方</h3>`;
+  others.innerHTML = `<h3 style="margin:0 0 8px">他の御方</h3>`;
   const list = document.createElement('div'); list.className='players';
   for (const [pid,p] of Object.entries(room.players||{})){
     if (pid===state.myUid) continue;
     const d = document.createElement('div'); d.className='player'+(p.dropped?'':'');
     if (room.currentTurnUid===pid && !room.winnerUid) d.classList.add('active');
-    d.innerHTML = `<span class=\"dot\"></span><strong>${p.name}</strong> ${p.dropped?'<span class=\"pill\">脱落</span>':''}`;
+    d.innerHTML = `<span class="dot"></span><strong>${p.name}</strong> ${p.dropped?'<span class="pill">脱落</span>':''}`;
     const hand = document.createElement('div'); hand.className='cards';
     (p.word||[]).forEach((ch,i)=>{ hand.appendChild(cardNode(ch, (p.revealed||[])[i], false)); });
     d.appendChild(hand);
@@ -687,7 +686,7 @@ function renderGame(){
 
   /* 自分の手札 */
   const mine = document.createElement('div'); mine.className='panel';
-  mine.innerHTML = `<h3 style=\"margin:0 0 8px\">自分の手札</h3>`;
+  mine.innerHTML = `<h3 style="margin:0 0 8px">自分の手札</h3>`;
   const myhand = document.createElement('div'); myhand.className='cards me';
   (me.word||[]).forEach((ch,i)=>{ myhand.appendChild(cardNode(ch, (me.revealed||[])[i], true)); });
   mine.appendChild(myhand);
@@ -696,7 +695,6 @@ function renderGame(){
   mine.appendChild(hint);
   root.appendChild(mine);
 
-  // Confetti when win
   if (room.winnerUid && !state.didConfetti){ state.didConfetti = true; confetti(); }
 }
 
@@ -722,7 +720,7 @@ function render(){
 </script>
 
 <script>
-/* === Sound Effects system: mp3→wav fallback, mute toggle, autoplay unlock, hooks === */
+/* === Sound Effects system === */
 const SILENT_WAV = "data:audio/wav;base64,UklGRiYAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQIAAAAAAA==";
 
 const Sound = {
@@ -794,11 +792,9 @@ document.addEventListener('DOMContentLoaded', ()=>{
       return r;
     };
   } else {
-    // Fallback: still try to hook DOM once after load
     window.addEventListener('load', ()=> setTimeout(hookSEDOM, 0));
   }
 
-  // Wrap startGame / restart to play SFX
   if (typeof window.startGame === 'function'){
     const _startGame = window.startGame;
     window.startGame = function(){
@@ -814,7 +810,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
     };
   }
 
-  // ✅ 正規表現の誤り修正：文字クラス→選択（OR）
+  // 成功/失敗でSE
   if (typeof window.showToast === 'function'){
     const _showToast = window.showToast;
     window.showToast = function(msg){
@@ -828,7 +824,6 @@ document.addEventListener('DOMContentLoaded', ()=>{
   }
 
   function hookSEDOM(){
-    // Generic buttons
     const enter = document.getElementById('enter');
     if (enter && !enter._seBound){
       enter.addEventListener('click', ()=> SE.click.play());
@@ -844,7 +839,6 @@ document.addEventListener('DOMContentLoaded', ()=>{
       lockBtn.addEventListener('click', ()=> SE.lock.play());
       lockBtn._seBound = true;
     }
-    // Tiles (board selection)
     document.querySelectorAll('.tile, [data-tile]').forEach(el=>{
       if (!el._seBound){
         el.addEventListener('click', ()=> SE.click.play(), { capture:true });
@@ -855,14 +849,11 @@ document.addEventListener('DOMContentLoaded', ()=>{
 })();
 </script>
 
-
 <script>
-/* === BGM Controller: looping music with mp3→wav fallback & toggle === */
+/* === BGM Controller === */
 const BGM = (function(){
   const sources = ['bgm/theme.mp3', 'bgm/theme.wav'];
   let audio = null;
-  let ready = false;
-
   function ensure(){
     if (audio) return audio;
     audio = new Audio(sources[0]);
@@ -874,14 +865,9 @@ const BGM = (function(){
     }, { once:true });
     return audio;
   }
-
   function playSafely(){
-    try{
-      ensure();
-      return audio.play();
-    }catch(e){ return Promise.reject(e); }
+    try{ ensure(); return audio.play(); }catch(e){ return Promise.reject(e); }
   }
-
   const api = {
     enabled: localStorage.getItem('irohani_bgm') !== 'off',
     setEnabled(v){
@@ -890,24 +876,11 @@ const BGM = (function(){
       const b = document.getElementById('bgmToggle');
       if (b) b.textContent = v ? '🎵 BGM ON' : '🔕 BGM OFF';
       if (!audio) ensure();
-      if (v){
-        // try play, will only work after user interaction due to autoplay policy
-        playSafely().catch(()=>{});
-      }else{
-        try{ audio.pause(); }catch(e){}
-      }
+      if (v){ playSafely().catch(()=>{}); } else { try{ audio.pause(); }catch(e){} }
     },
     toggle(){ this.setEnabled(!this.enabled); },
-    _unlock(){
-      if (!audio) ensure();
-      if (this.enabled){
-        playSafely().catch(()=>{});
-      }
-    },
-    setVolume(x){
-      ensure();
-      audio.volume = Math.max(0, Math.min(1, x));
-    }
+    _unlock(){ if (!audio) ensure(); if (this.enabled){ playSafely().catch(()=>{}); } },
+    setVolume(x){ ensure(); audio.volume = Math.max(0, Math.min(1, x)); }
   };
   return api;
 })();
@@ -917,12 +890,10 @@ const BGM = (function(){
   const _unlock = Sound.unlock;
   Sound.unlock = function(){
     const r = _unlock.apply(Sound, arguments);
-    // start bgm if enabled
     try{ BGM._unlock(); }catch(e){}
     return r;
   };
 
-  // Init toggle button
   document.addEventListener('DOMContentLoaded', ()=>{
     const b = document.getElementById('bgmToggle');
     if (b){
@@ -933,13 +904,11 @@ const BGM = (function(){
 })();
 </script>
 
-
 <script>
 // Initialize BGM volume slider
 document.addEventListener('DOMContentLoaded', ()=>{
   const vol = document.getElementById('bgmVolume');
   if (vol){
-    // load saved volume or default 0.5
     const saved = parseFloat(localStorage.getItem('irohani_bgm_volume'));
     let v = (!isNaN(saved)? saved: 0.5);
     vol.value = Math.round(v*100);
@@ -953,7 +922,6 @@ document.addEventListener('DOMContentLoaded', ()=>{
 });
 </script>
 
-
 <script>
 // === BGM Volume Slider wiring (persist to localStorage, live update) ===
 (function(){
@@ -962,12 +930,10 @@ document.addEventListener('DOMContentLoaded', ()=>{
   document.addEventListener('DOMContentLoaded', ()=>{
     const el = document.getElementById('bgmVolume');
     if (!el) return;
-    // restore
     let v = parseFloat(localStorage.getItem(KEY));
-    if (isNaN(v)) v = 0.5; // default
+    if (isNaN(v)) v = 0.5;
     try{ BGM.setVolume(clamp01(v)); }catch(e){}
     el.value = Math.round(clamp01(v) * 100);
-    // listen
     el.addEventListener('input', (ev)=>{
       const val = clamp01(parseInt(ev.target.value,10) / 100);
       try{ BGM.setVolume(val); }catch(e){}
@@ -976,7 +942,6 @@ document.addEventListener('DOMContentLoaded', ()=>{
   });
 })();
 </script>
-
 
 <script>
 // Initialize BGM volume early if possible
