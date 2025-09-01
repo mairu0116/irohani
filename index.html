@@ -11,8 +11,7 @@
     --paper:#f7f4e9; --paper2:#f2efe6; --ink:#27231f; --muted:#6f675f;
     --indigo:#1a2c42; --vermilion:#b3352e; --asagi:#6f9dbb; --gold:#c8a44d;
     --ok:#7b955b; --warn:#b58b3a; --err:#a04b4b;
-
-    /* === 1080-fit: 調整用（PCデフォルト） === */
+    /* === 1080-fit: 調整用 === */
     --containerW: 1480px;
     --gap: 10px;
     --panelPad: 12px;
@@ -20,8 +19,8 @@
     --headerH: 84px;
     --topRowH: 130px;
     --sideW: 420px;
-    --tileH: 48px;   /* PC: ボードのタイル高さ（控えめ） */
-    --headH: 42px;   /* PC: 行/列ヘッダ高さ */
+    --tileH: 48px;      /* デスクトップ基準 */
+    --headH: 42px;
     --fontBase: 15px;
     --fontTitle: 30px;
   }
@@ -35,7 +34,6 @@
       linear-gradient(180deg, var(--paper) 0%, var(--paper2) 100%);
     overflow-x:hidden;
     font-size: var(--fontBase);
-    -webkit-tap-highlight-color: rgba(0,0,0,0);
   }
   .bg-dots::before{
     content:""; position:fixed; inset:0; pointer-events:none; opacity:.14; mix-blend-mode:multiply;
@@ -44,7 +42,7 @@
       radial-gradient(closest-side, rgba(26,44,66,.10) 80%, transparent 81%) 16px 16px/32px 32px;
   }
 
-  /* === 1080-fit: コンテナ・基本間隔（PC） === */
+  /* === 1080-fit: コンテナ・基本間隔 === */
   .container{max-width:var(--containerW);margin:0 auto;padding:16px}
   header{display:flex; align-items:center; justify-content:space-between; gap:10px; margin:2px 0 10px; min-height:var(--headerH)}
   .logo{display:flex; gap:10px; align-items:center}
@@ -68,7 +66,7 @@
   @media (max-width:900px){ .cols-3{grid-template-columns:1fr} }
   input,button{background:rgba(255,255,255,.7);color:var(--ink);border:1px solid rgba(39,35,31,.24);border-radius:10px;padding:8px 10px}
   input{min-width:220px; font-family:inherit}
-  button{cursor:pointer;font-weight:700;letter-spacing:.06em; transition: transform .08s ease, filter .12s ease, box-shadow .12s ease; touch-action: manipulation}
+  button{cursor:pointer;font-weight:700;letter-spacing:.06em; transition: transform .08s ease, filter .12s ease, box-shadow .12s ease}
   button:active{transform:translateY(1px) scale(.99)}
   .primary{background:linear-gradient(180deg, #23384f, #1a2c42); color:#faf7ed; border-color:#132334; box-shadow: 0 4px 12px rgba(26,44,66,.25)}
   .danger{background:linear-gradient(180deg, #8f2d27, #7a221d); color:#fff7f2; border-color:#5f1d18; box-shadow: 0 4px 12px rgba(179,53,46,.22)}
@@ -84,11 +82,11 @@
   .dot{width:8px;height:8px;border-radius:50%; background:linear-gradient(180deg,var(--vermilion),#e08378); box-shadow:0 0 0 2px rgba(179,53,46,.18)}
   @keyframes bump{0%{transform:scale(1)}30%{transform:scale(1.06)}100%{transform:scale(1)}}
 
-  /* ===== ボード（PC：少し小さめ） ===== */
+  /* ===== ボード（少し小さく/PC） ===== */
   .board-wrap h3{margin:0 0 6px}
   .board-grid{
     display:grid;
-    grid-template-columns: 64px repeat(5, 1fr); /* PCは比率で広がる */
+    grid-template-columns: 64px repeat(5, 1fr);
     column-gap:8px; row-gap:6px;
     align-items:stretch;
   }
@@ -106,7 +104,7 @@
     background:linear-gradient(180deg,#f0e5cf,#e5d1a0); font-weight:900; letter-spacing:.12em; color:#2a2622;
     text-shadow:0 1px 0 rgba(255,255,255,.65); box-shadow: 0 6px 16px rgba(0,0,0,.12);
     transition: transform .08s ease, box-shadow .12s ease, filter .12s ease, opacity .2s ease;
-    font-size:20px;
+    font-size:20px; -webkit-tap-highlight-color: transparent;
   }
   .tile.clickable{cursor:pointer}
   .tile.clickable:hover{transform: translateY(-2px); box-shadow: 0 10px 24px rgba(0,0,0,.18)}
@@ -119,7 +117,7 @@
     color:#8b7f71; opacity:.6; font-size:16px
   }
 
-  /* カード（PC：少し小さく） */
+  /* カード（やや小さめ） */
   .cards{display:flex;gap:8px;flex-wrap:wrap}
   .card{width:46px;height:66px;border-radius:10px;border:1px solid rgba(39,35,31,.22);display:flex;align-items:center;justify-content:center;
         background:linear-gradient(180deg,#fff8e9,#f1e3cc);position:relative; box-shadow: 0 6px 18px rgba(0,0,0,.16); font-weight:900; color:var(--ink); font-size:16px}
@@ -153,7 +151,7 @@
   #fx{position:fixed; inset:0; pointer-events:none; z-index:90}
 
   .secret-panel{border:2px dashed rgba(200,164,77,.7); background:rgba(255,255,240,.6)}
-  .secret-title{font-weight:900; color:var(--indigo); margin-bottom:4px}
+  .secret-title{font-weight:900; color:#1a2c42; margin-bottom:4px}
 
   /* === 自分の手番バナー === */
   .turn-me{
@@ -167,7 +165,7 @@
   @keyframes ping { 0%,100% { filter:brightness(1); } 50% { filter:brightness(1.12); } }
   body.itsmyturn .board-wrap{ outline:2px solid rgba(179,53,46,.3); outline-offset:2px; }
 
-  /* === 1080-fit: ゲームレイアウト（PC） === */
+  /* === 1080-fit: ゲームレイアウト === */
   .game-layout{
     display:grid;
     grid-template-columns: 1fr var(--sideW);
@@ -178,61 +176,43 @@
   .top-row{ grid-column: 1 / -1; display:grid; grid-template-columns: repeat(3, 1fr); gap: var(--gap); min-height: var(--topRowH); }
   .side-stack{ display:grid; grid-auto-rows: min-content; gap: var(--gap); }
 
-  /* 内側スクロール時の見切れ対策 */
   .panel.scrollable{ overflow:auto; }
 
-  /* === モバイル最適化（iPhoneを意識） ======================= */
+  #bgmToggle, #soundToggle { font-size:12px }
 
-  /* 1) タブレット/小型横幅：1カラムにして余裕を作る */
-  @media (max-width: 900px){
-    .game-layout{ grid-template-columns: 1fr; }
-    .top-row{ grid-template-columns: 1fr; }
-    :root{ --sideW: 100% }
-    .container{ padding:12px }
-  }
-
-  /* 2) 幅768px以下：ボードを固定幅＋横スクロールに変更（タップ大きめ） */
-  @media (max-width: 768px){
-    :root{ --tileH: 56px; --headH: 50px }
-    .board-grid{
-      /* 行ラベル 60px + 5列×64px、ギャップ8pxを確保 */
-      grid-template-columns: 60px repeat(5, 64px);
-      /* 横スクロール用の固定総幅（目安）：60 + 5*64 + 8*5 = 420px */
-      min-width: 420px;
+  /* === iPhone fix: スモール幅（縦向き想定） === */
+  @media (max-width: 480px) {
+    :root{
+      --fontBase: 14px;
+      --fontTitle: 22px;
+      --sideW: 100%;
+      --tileH: 64px;   /* タップしやすく */
+      --headH: 56px;
     }
-    .board-wrap{ overflow-x:auto; -webkit-overflow-scrolling: touch; }
+    .container{ max-width:100%; padding:10px }
+    header{ min-height:auto; }
+    .game-layout{ grid-template-columns: 1fr }          /* 1カラム */
+    .top-row{ grid-template-columns: 1fr }              /* 3パネル縦積み */
+    .board-wrap{
+      overflow-x:auto;                                   /* 横スクロールで最小幅を確保 */
+      -webkit-overflow-scrolling: touch;
+    }
+    .board-grid{
+      grid-template-columns: 72px repeat(5, 72px);       /* 最小幅（=細くしない） */
+      column-gap:6px; row-gap:6px;
+      width: max-content;                                 /* コンテンツ幅に合わせる */
+    }
+    .head, .rowlabel{ font-size:14px }
     .tile{ font-size:22px }
-    .head, .rowlabel{ font-size:13px }
+    .cards .card{ width:40px; height:58px }
   }
 
-  /* 3) 幅480px以下：iPhone 縦持ちの標準的なケース */
-  @media (max-width: 480px){
-    :root{ --tileH: 60px; --headH: 54px; --panelPad: 10px; --gap:8px }
-    .container{ padding:10px }
-    .subtitle{ display:none }
-    #bgmVolume{ display:none } /* 極小画面で音量スライダ非表示 */
-
-    .board-grid{
-      /* 行ラベル 56px + 5列×60px、ギャップ8px */
-      grid-template-columns: 56px repeat(5, 60px);
-      min-width: 56px + (60px * 5) + (8px * 5); /* 計算式のコメント、実際の幅はブラウザ計算 */
-    }
+  /* === iPhone fix: 横向きでも狭い端末配慮（中間ブレーク） === */
+  @media (max-width: 680px) and (orientation: landscape){
+    .game-layout{ grid-template-columns: 1fr }     /* 横でも1カラムに落としてボード幅優先 */
     .board-wrap{ overflow-x:auto; -webkit-overflow-scrolling: touch; }
-    .tile{ font-size:22px }
-    .tile.used::after{ font-size:10px; padding:2px 6px }
-    .head, .rowlabel{ font-size:13px }
-  }
-
-  /* 4) 幅390px以下：iPhone mini 等さらに狭い場合 */
-  @media (max-width: 390px){
-    :root{ --tileH: 58px; --headH: 52px }
-    .board-grid{
-      /* 行ラベル 52px + 5列×58px、ギャップ6pxに少し詰める */
-      column-gap:6px;
-      grid-template-columns: 52px repeat(5, 58px);
-      min-width: 52px + (58px * 5) + (6px * 5);
-    }
-    .tile{ font-size:21px }
+    .board-grid{ grid-template-columns: 64px repeat(5, 68px); width:max-content }
+    :root{ --tileH: 60px; --headH: 52px }
   }
 </style>
 </head>
@@ -247,18 +227,18 @@
         <div class="subtitle">おし～っこの倫理観</div>
       </div>
     </div>
-
-    <button id="soundToggle" class="pill ghost" title="SE切替">🔊 SE ON</button>
-    <button id="bgmToggle" class="pill ghost" title="BGM切替">🎵 BGM ON</button>
-    <input id="bgmVolume" type="range" min="0" max="100" value="50" title="BGM音量" style="vertical-align:middle;width:120px;">
-  </header>
+  
+  <button id="soundToggle" class="pill ghost" title="SE切替">🔊 SE ON</button>
+  <button id="bgmToggle" class="pill ghost" title="BGM切替">🎵 BGM ON</button>
+  <input id="bgmVolume" type="range" min="0" max="100" value="50" title="BGM音量" style="vertical-align:middle;width:120px;">
+</header>
 
   <div id="app" class="grid"></div>
   <p class="footer">バターが絡みついて、いやだねえ</p>
 </div>
 <div class="toast" id="toast"></div>
 
-<!-- Firebase CDN（略） -->
+<!-- Firebase CDN -->
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
 <script>
@@ -276,15 +256,12 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
-/* 以降のロジックは前回と同一（勝者紙吹雪の完全停止、ロック解除、手番バナー、勝者全開示など維持） */
-/* --- 略せない部分のみ抜粋/同一記述 --- */
-
 /* 便利関数 */
 const uid = () => localStorage.getItem('irohani_uid') || (localStorage.setItem('irohani_uid', Math.random().toString(36).slice(2,10)), localStorage.getItem('irohani_uid'));
 const now = () => Date.now();
 const qs = new URLSearchParams(location.search);
 
-/* Toast */
+/* Toast helpers */
 function showToast(msg, ok=true){
   const wrap = document.getElementById('toast');
   const el = document.createElement('div'); el.className = 't ' + (ok ? 'ok' : 'ng');
@@ -293,95 +270,416 @@ function showToast(msg, ok=true){
   setTimeout(()=> wrap.removeChild(el), 1900);
 }
 
-/* 紙吹雪ループ（同一） */
+/* Endless Confetti */
 let CONFETTI_RAF = 0, CONFETTI_CANVAS = null, CONFETTI_RUNNING = false;
-function startConfettiLoop(pieces=140){ /* …同一… */ }
-function stopConfettiLoop(){ /* …同一… */ }
+function startConfettiLoop(pieces=140){
+  if (CONFETTI_RUNNING) return;
+  CONFETTI_RUNNING = true;
+  const container = document.getElementById('fx');
+  const canvas = document.createElement('canvas'); canvas.width=innerWidth; canvas.height=innerHeight;
+  CONFETTI_CANVAS = canvas;
+  container.appendChild(canvas);
+  const ctx = canvas.getContext('2d');
+  const colors = ['#b3352e','#c8a44d','#1a2c42','#6f9dbb','#7b955b','#2a2622'];
+  const P = Array.from({length:pieces}, ()=>({
+    x: Math.random()*canvas.width, y: -20 - Math.random()*canvas.height,
+    w: 6 + Math.random()*6, h: 10 + Math.random()*12,
+    vx: -1 + Math.random()*2, vy: 2 + Math.random()*3.5,
+    rot: Math.random()*Math.PI, vr: -0.1 + Math.random()*0.2,
+    color: colors[Math.floor(Math.random()*colors.length)]
+  }));
+  function step(){
+    if (!CONFETTI_RUNNING) return;
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    P.forEach(p=>{
+      p.x+=p.vx; p.y+=p.vy; p.rot+=p.vr; p.vy += 0.02;
+      if (p.y>canvas.height+30){ p.y=-20; p.x=Math.random()*canvas.width; p.vy=2+Math.random()*3.5; }
+      if (p.x<-40) p.x=canvas.width+20; if (p.x>canvas.width+40) p.x=-20;
+      ctx.save(); ctx.translate(p.x,p.y); ctx.rotate(p.rot); ctx.fillStyle=p.color; ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h); ctx.restore();
+    });
+    CONFETTI_RAF = requestAnimationFrame(step);
+  }
+  CONFETTI_RAF = requestAnimationFrame(step);
+  const onResize = ()=>{ if (!canvas) return; canvas.width=innerWidth; canvas.height=innerHeight; };
+  window.addEventListener('resize', onResize);
+  canvas._cleanup = ()=> window.removeEventListener('resize', onResize);
+}
+function stopConfettiLoop(){
+  CONFETTI_RUNNING = false;
+  if (CONFETTI_RAF) cancelAnimationFrame(CONFETTI_RAF), CONFETTI_RAF=0;
+  if (CONFETTI_CANVAS){
+    try { CONFETTI_CANVAS._cleanup && CONFETTI_CANVAS._cleanup(); } catch{}
+    CONFETTI_CANVAS.parentNode && CONFETTI_CANVAS.parentNode.removeChild(CONFETTI_CANVAS);
+    CONFETTI_CANVAS = null;
+  }
+}
 
-/* ひらがな正規化など定義（同一） */
-const mapDakuten = Object.fromEntries([/* …同一… */]);
-const mapSmall   = Object.fromEntries([/* …同一… */]);
-function toHiragana(s){ /* …同一… */ }
-function normWord(input){ /* …同一… */ }
+/* ひらがな正規化 */
+const mapDakuten = Object.fromEntries([
+  ['が','か'],['ぎ','き'],['ぐ','く'],['げ','け'],['ご','こ'],
+  ['ざ','さ'],['じ','し'],['ず','す'],['ぜ','せ'],['ぞ','そ'],
+  ['だ','た'],['ぢ','ち'],['づ','つ'],['で','て'],['ど','と'],
+  ['ば','は'],['び','ひ'],['ぶ','ふ'],['べ','へ'],['ぼ','ほ'],
+  ['ぱ','は'],['ぴ','ひ'],['ぷ','ふ'],['ぺ','へ'],['ぽ','ほ'],
+  ['ゔ','う']
+]);
+const mapSmall = Object.fromEntries([
+  ['ゃ','や'],['ゅ','ゆ'],['ょ','よ'],['っ','つ'],
+  ['ぁ','あ'],['ぃ','い'],['ぅ','う'],['ぇ','え'],['ぉ','お']
+]);
+function toHiragana(s){
+  return s.replace(/[\u30a1-\u30f6]/g, c => String.fromCharCode(c.charCodeAt(0)-0x60));
+}
+function normWord(input){
+  let s = (input||'').toString().trim();
+  s = toHiragana(s);
+  s = s.replace(/\s+/g,'');
+  let out = [];
+  for (const ch of s){
+    if (mapDakuten[ch]) out.push(mapDakuten[ch]);
+    else if (mapSmall[ch]) out.push(mapSmall[ch]);
+    else out.push(ch);
+  }
+  out = out.filter(c => /[ぁ-んー]/.test(c));
+  if (out.length < 2 || out.length > 7) return null;
+  while(out.length < 7) out.push('×');
+  return out;
+}
 
-/* グリッド/お題（同一） */
+/* グリッド定義 */
 const VOWELS = ['あ','い','う','え','お'];
-const ROWS = [/* …同一… */];
-const TOPICS = [/* …同一… */];
-async function setTopic(roomId){ /* …同一… */ }
+const ROWS = [
+  { label:'あ行', cells:['あ','い','う','え','お'] },
+  { label:'か行', cells:['か','き','く','け','こ'] },
+  { label:'さ行', cells:['さ','し','す','せ','そ'] },
+  { label:'た行', cells:['た','ち','つ','て','と'] },
+  { label:'な行', cells:['な','に','ぬ','ね','の'] },
+  { label:'は行', cells:['は','ひ','ふ','へ','ほ'] },
+  { label:'ま行', cells:['ま','み','む','め','も'] },
+  { label:'や行', cells:['や',null,'ゆ',null,'よ'] },
+  { label:'ら行', cells:['ら','り','る','れ','ろ'] },
+  { label:'わ行', cells:['わ',null,null,null,'を'] },
+  { label:'その他', cells:['ん',null,null,null,'ー'] },
+];
 
-/* 草稿保存（同一） */
+/* お題 */
+const TOPICS = [/* 省略：前回と同じ配列 */'飲みもの','のりもの','文房具','動物','職業','食べもの','昔のできごと','スポーツ','キャラクター','学校にあるもの','いま部屋にあるもの','コンビニにあるもの','行きたい場所','最近出かけた場所','最近食べたもの','最近見たもの','家にあるもの','身近にあるもの','建物','野菜','くだもの','お菓子','キッチン用品','電子機器','架空の生き物','いま食べたいもの','年間行事','春といえば','夏といえば','秋といえば','冬といえば','お正月','夏休み','海といえば','山といえば','旅に持っていくもの','歌のタイトル','ゲームのタイトル','有名人の名前','バンド・グループの名前','会社の名前','チェーン店の名前','武器の名前','技の名前','日本の観光地','海外の観光地','あいさつ','宇宙といえば','お弁当のおかず','魚介類','中華料理','パンといえば','植物','虫','生き物','寿司ネタ','おいしいもの','たのしいもの','むずかしいもの','かわいいもの','あまいもの','にがいもの','禁止されてるもの','あたたかいもの','つめたいもの','赤いもの','青いもの','白いもの','黒いもの','長いもの','大きいもの','やわらかいもの','とぶもの','まわるもの','転がるもの','昔好きだった人の名前','好きなタイプ','自分を動物に例えると','自分のいちばん大切なもの','ドキドキするもの','気になるもの','災害時に必要なもの'];
+
+async function setTopic(roomId){
+  const topic = TOPICS[Math.floor(Math.random()*TOPICS.length)];
+  await db.ref(`rooms/${roomId}/topic`).set(topic);
+}
+
+/* ドラフト保存 */
 function draftKey(roomId, uid){ return `irohani_draft_${roomId}_${uid}`; }
 function getDraft(roomId, uid){ try { return localStorage.getItem(draftKey(roomId, uid)) || ''; } catch{ return ''; } }
 function setDraft(roomId, uid, val){ try { localStorage.setItem(draftKey(roomId, uid), val||''); } catch{} }
 function clearDraft(roomId, uid){ try { localStorage.removeItem(draftKey(roomId, uid)); } catch{} }
 
-/* 状態など（同一） */
-const state = { screen:'lobby', roomId:'', myUid:uid(), name:'', roomRef:null, roomSnap:null, lastSeenAttackTs:0, didConfetti:false };
+/* 状態 */
+const state = { screen:'lobby', roomId:'', myUid:(()=>uid())(), name:'', roomRef:null, roomSnap:null, lastSeenAttackTs:0, didConfetti:false };
 
-/* join / subscribe / lock / unlock / start / nextAlive / checkDropAndWinner / attack / restart（同一） */
-/* …全関数は以前のコードと同一です… */
+/* join / subscribe など（前回通り） */
+async function joinRoom(roomId, name){
+  const ref = db.ref(`rooms/${roomId}`);
+  const snap = await ref.get();
+  if (!snap.exists()){
+    await ref.set({ createdAt: now(), started:false, topic:null, currentTurnUid:null, consec:0, winnerUid:null, players:{}, lastAttack:null, used:{} });
+  }
+  await db.ref(`rooms/${roomId}/players/${state.myUid}`).set({ name, word:[], revealed:[], locked:false, dropped:false, raw:'', joinedAt: now() });
+  return ref;
+}
+window.addEventListener('beforeunload', ()=>{ if (state.roomId && state.myUid) db.ref(`rooms/${state.roomId}/players/${state.myUid}`).remove(); });
+function subscribeRoom(){ if (!state.roomRef) return; state.roomRef.on('value', snap => { state.roomSnap = snap; if (state.screen!=='lobby') render(); }); }
 
-/* 手番インジケータ（同一） */
-function updateTurnIndicators(myTurn){ /* …同一… */ }
+/* ロック/解除/開始/攻撃/勝敗（前回と同等ロジック） */
+async function lockWord(roomId, uid, raw){
+  const word = normWord(raw);
+  if (!word){ alert('2〜7文字のひらがなで入力してください（濁点/半濁点なし、小文字は大文字化、伸ばし棒OK）'); return; }
+  const rawNormalized = word.filter(ch => ch!=='×').join('');
+  await db.ref(`rooms/${roomId}/players/${uid}`).update({ word, revealed: new Array(word.length).fill(false), locked:true, dropped:false, raw: rawNormalized });
+}
+async function unlockWord(roomId, uid){
+  await db.ref(`rooms/${roomId}`).transaction(room=>{
+    if (!room || room.started) return room;
+    const p = room.players?.[uid]; if (!p) return room;
+    p.word=[]; p.revealed=[]; p.locked=false; p.dropped=false; p.raw='';
+    return room;
+  });
+}
+async function startGame(roomId){
+  state.didConfetti = false; stopConfettiLoop();
+  await db.ref(`rooms/${roomId}`).transaction(room=>{
+    if (!room || room.started) return room;
+    const ps = room.players || {};
+    const ok2p = Object.values(ps).length>=2;
+    const allLocked = Object.values(ps).every(p=>p.locked && (p.word||[]).length===7);
+    if (!(ok2p && allLocked)) return room;
+    if (!room.topic) room.topic = TOPICS[Math.floor(Math.random()*TOPICS.length)];
+    const order = Object.entries(ps).sort((a,b)=> (a[1].joinedAt||0)-(b[1].joinedAt||0));
+    room.currentTurnUid = order[0][0]; room.consec=0; room.started=true; room.winnerUid=null; room.lastAttack=null; room.used={};
+    for (const [pid,p] of Object.entries(ps)) p.dropped=false;
+    return room;
+  });
+}
+function nextAliveUid(room){
+  const entries = Object.entries(room.players||{}).sort((a,b)=> (a[1].joinedAt||0)-(b[1].joinedAt||0));
+  if (!room.currentTurnUid) return entries[0]?.[0]||null;
+  const alive = entries.filter(([id,p])=>!p.dropped);
+  const idx = alive.findIndex(([id])=> id===room.currentTurnUid);
+  if (idx===-1) return alive[0]?.[0]||null;
+  return alive[(idx+1)%alive.length]?.[0]||null;
+}
+function checkDropAndWinner(room){
+  let aliveIds = [];
+  for (const [pid,p] of Object.entries(room.players||{})){
+    const w = p.word||[]; const r = p.revealed||[];
+    const allOpen = w.every((ch,i)=> ch==='×' || r[i]===true);
+    if (allOpen) p.dropped = true;
+    if (!p.dropped) aliveIds.push(pid);
+  }
+  if (aliveIds.length===1){
+    const winner = aliveIds[0]; room.winnerUid = winner;
+    const wp = room.players[winner]; if (wp){ const w = wp.word||[]; wp.revealed = w.map(ch => ch==='×' ? false : true); }
+  }
+}
+async function attack(roomId, byUid, kana){
+  await db.ref(`rooms/${roomId}`).transaction(room=>{
+    if (!room?.started || room.winnerUid) return room;
+    if (room.currentTurnUid !== byUid) return room;
+    const validSet = new Set(ROWS.flatMap(r=>r.cells).filter(Boolean));
+    if (!validSet.has(kana)) return room;
+    room.used = room.used || {}; if (room.used[kana]) return room; room.used[kana] = true;
 
+    let hit = false;
+    for (const [pid,p] of Object.entries(room.players||{})){
+      const w = p.word||[]; const r = p.revealed||[];
+      for (let i=0;i<w.length;i++){ if (!r[i] && w[i]===kana && w[i]!=='×'){ r[i] = true; hit = true; } }
+      p.revealed = r;
+    }
+    checkDropAndWinner(room);
+    if (!hit){ room.consec=0; room.currentTurnUid = nextAliveUid(room); }
+    else { if (room.consec===0) room.consec=1; else { room.consec=0; room.currentTurnUid = nextAliveUid(room); } }
+    room.lastAttack = { by: byUid, kana, success: hit, ts: now() };
+    return room;
+  });
+}
+async function restart(roomId){
+  await db.ref(`rooms/${roomId}`).transaction(room=>{
+    if (!room) return room;
+    const ps = room.players||{}; for (const [pid,p] of Object.entries(ps)){ p.word=[]; p.revealed=[]; p.locked=false; p.dropped=false; p.raw=''; }
+    room.started=false; room.topic=null; room.currentTurnUid=null; room.consec=0; room.winnerUid=null; room.lastAttack=null; room.used = {};
+    return room;
+  });
+  state.didConfetti = false; stopConfettiLoop();
+}
+
+/* 手番インジケータ */
+function updateTurnIndicators(myTurn){
+  document.body.classList.toggle('itsmyturn', !!myTurn);
+  const baseTitle = 'いろはに奔走 - みんなで楽しく文字当てゲーム！';
+  try{ document.title = myTurn ? '▶ あなたの手番！ - いろはに奔走' : baseTitle; }catch(e){}
+  document.querySelectorAll('.turn-me').forEach(n=>n.remove());
+  if (myTurn){
+    const b = document.createElement('div'); b.className = 'turn-me'; b.textContent = '▶ あなたの手番'; document.body.appendChild(b);
+  }
+}
 const $ = s => document.querySelector(s);
-function cardNode(ch, revealed, isMe){ /* …同一… */ }
+function cardNode(ch, revealed, isMe){
+  const hidden = !revealed && !isMe;
+  const div = document.createElement('div');
+  const showXStyle = (ch === '×') && (isMe || revealed);
+  div.className = 'card' + (showXStyle ? ' x' : '') + (revealed ? ' revealed' : '') + (hidden ? ' hidden' : '');
+  div.textContent = hidden ? '？' : ch;
+  return div;
+}
 
-function renderLobby(){ /* …同一… */ }
-function renderRoom(){ /* …同一… */ }
+function renderLobby(){
+  const root = $('#app'); root.innerHTML='';
+  const panel = document.createElement('div'); panel.className='panel grid';
+  const name = qs.get('name') || ''; const room = qs.get('room') || '';
+  if (name && !state.name) state.name = name;
 
-/* === 1080-fit: 高さ計算（PC/モバイル両対応） === */
+  panel.innerHTML = `
+    <div class="row"><div class="hint">URLに <span class="kbd">?room=ROOMID&name=あなたの名前</span> を付けて共有すると入室が楽です。</div></div>
+    <div class="row"><label>ユーザー名</label><input id="name" placeholder="例：たろう" value="${state.name||''}" /></div>
+    <div class="row"><label>ルームID</label><input id="room" placeholder="例：IROHA123" value="${room||''}" /></div>
+    <div class="row">
+      <button class="primary" id="enter">入室 / 作成</button>
+      <span class="hint">友だちにルームIDをシェアしよう。</span>
+    </div>
+    <div class="panel">
+      <div class="hint"><strong>遊び方：</strong>お題に沿った2〜7文字の言葉をひらがなで（濁点なし/小文字→大文字、足りない分×）。手番でボードの文字をクリックして攻撃。同じ文字があれば公開。成功ならもう1回だけ連撃OK。×以外が全公開で脱落、最後まで残った人が勝ち。</div>
+    </div>
+  `;
+  root.appendChild(panel);
+
+  $('#enter').onclick = async ()=>{
+    const name = $('#name').value.trim();
+    const roomId = $('#room').value.trim();
+    if (!name || !roomId){ alert('ユーザー名とルームIDを入力してください'); return; }
+    state.name = name; state.roomId = roomId;
+    state.roomRef = await joinRoom(roomId, name);
+    subscribeRoom();
+    state.screen = 'room'; render();
+  };
+}
+
+function renderRoom(){
+  const root = $('#app'); root.innerHTML='';
+  const room = state.roomSnap?.val()||{};
+  const me = (room.players||{})[state.myUid] || {};
+
+  if (state.didConfetti && (!room.winnerUid || !room.started)){ state.didConfetti = false; stopConfettiLoop(); }
+  updateTurnIndicators(false);
+
+  const topicWrap = document.createElement('div');
+  topicWrap.className = 'panel';
+  topicWrap.innerHTML = `
+    <div class="hint">お題</div>
+    <div class="topic-chip"><span class="emoji">🎯</span><span>${room.topic || '（未設定）'}</span></div>
+    <div class="row" style="margin-top:8px">
+      <button id="pickTopic" class="ghost"${room.started?' disabled':''}>
+        ${room.topic ? 'お題を再抽選' : 'お題を抽選'}
+      </button>
+    </div>
+  `;
+
+  const players = Object.entries(room.players||{});
+  const listPanel = document.createElement('div'); listPanel.className='panel';
+  const list = document.createElement('div'); list.className='players';
+  players.forEach(([pid,p])=>{
+    const d = document.createElement('div'); d.className='player';
+    d.innerHTML = `<span class="dot"></span><strong>${p.name}</strong> <span class="pill">${p.locked?'準備OK':'準備中'}</span>`;
+    list.appendChild(d);
+  });
+  listPanel.innerHTML = `<h3 style="margin:0 0 6px">入室中の御方</h3>`;
+  listPanel.appendChild(list);
+
+  const controls = document.createElement('div'); controls.className='row';
+  const wordWrap = document.createElement('div'); wordWrap.className='row';
+  const inputDisabled = !!me.locked;
+  wordWrap.innerHTML = `
+    <input id="myword" placeholder="お題に沿って2〜7文字（例：さかな）" style="min-width:260px" ${inputDisabled?'disabled':''} />
+    <button id="lock" class="success" ${inputDisabled?'disabled':''}>言葉をロック</button>
+    ${me.locked && !room.started ? `<button id="unlock" class="ghost">ロック解除</button>` : ``}
+  `;
+  controls.appendChild(wordWrap);
+
+  const start = document.createElement('button'); start.textContent='▶ ゲームスタート'; start.className='primary';
+  start.onclick = ()=> startGame(state.roomId);
+  const back = document.createElement('button'); back.textContent='← ロビーへ'; back.className='ghost';
+  back.onclick = ()=>{ state.screen='lobby'; render(); };
+  const hint = document.createElement('div'); hint.className='hint'; hint.textContent = '全員が「言葉をロック」するとスタートできます。';
+  controls.appendChild(start); controls.appendChild(back);
+  listPanel.appendChild(controls); listPanel.appendChild(hint);
+
+  if (me.locked && (me.word||[]).length){
+    const secret = document.createElement('div');
+    secret.className = 'panel secret-panel';
+    const joined = (me.word||[]).filter(ch=>ch!=='×').join('');
+    secret.innerHTML = `
+      <div class="secret-title">🔒 あなたのロック済み単語（自分にだけ表示）</div>
+      <div class="cards me" id="myLockedCards"></div>
+      <div class="hint">確認用：<strong>${joined||'(未設定)'}</strong></div>
+    `;
+    setTimeout(()=>{
+      const wrap = document.getElementById('myLockedCards');
+      (me.word||[]).forEach((ch,i)=> wrap && wrap.appendChild(cardNode(ch, true, true)));
+    },0);
+    listPanel.appendChild(secret);
+  }
+
+  const rootFrag = document.createDocumentFragment();
+  rootFrag.appendChild(topicWrap);
+  rootFrag.appendChild(listPanel);
+  root.appendChild(rootFrag);
+
+  const inputEl = document.getElementById('myword');
+  if (inputEl){
+    inputEl.value = getDraft(state.roomId, state.myUid);
+    inputEl.addEventListener('input', (e)=> setDraft(state.roomId, state.myUid, e.target.value));
+  }
+  const lockBtn = document.getElementById('lock');
+  if (lockBtn){
+    lockBtn.onclick = ()=>{
+      const raw = document.getElementById('myword').value;
+      lockWord(state.roomId, state.myUid, raw).then(()=>{
+        clearDraft(state.roomId, state.myUid);
+        if (inputEl){ inputEl.value=''; inputEl.disabled = true; }
+        lockBtn.disabled = true;
+      });
+    };
+  }
+  const unlockBtn = document.getElementById('unlock');
+  if (unlockBtn){
+    unlockBtn.onclick = async ()=>{
+      await unlockWord(state.roomId, state.myUid);
+      if (inputEl){ inputEl.disabled = false; inputEl.focus(); }
+      showToast('ロックを解除しました', true);
+    };
+  }
+  const pickBtn = document.getElementById('pickTopic');
+  if (pickBtn && !room.started){ pickBtn.onclick = ()=> setTopic(state.roomId); }
+
+  if (room.started) { state.screen='game'; render(); }
+}
+
+/* === 1080-fit + iPhone fix: 高さ計算 === */
 function fitLayoutHeights(){
   const vh = window.innerHeight || 1080;
+  const vw = window.innerWidth || 1920;
+  const narrow = vw <= 600; /* === iPhone想定 */
+
   const header = document.querySelector('header');
   const topRow = document.querySelector('.top-row');
   const boardWrap = document.querySelector('.board-wrap');
   const others = document.getElementById('panel-others');
   const mine = document.getElementById('panel-mine');
-
   if (!header || !topRow || !boardWrap) return;
 
   const headH = header.offsetHeight || 84;
   const topH  = topRow.offsetHeight || 130;
   const paddings = 16 + 16;
   const footer = 20;
+  const remain = Math.max(300, vh - headH - topH - paddings - footer - 8);
 
-  const remain = Math.max(360, vh - headH - topH - paddings - footer - 8);
-
-  /* パネルの高さ（モバイルでも内側スクロール可能） */
-  const boardH = Math.min(740, Math.max(420, remain));
+  const minBoard = narrow ? 320 : 520;
+  const maxBoard = narrow ? 640 : 740;
+  const boardH = Math.min(maxBoard, Math.max(minBoard, remain));
   boardWrap.style.maxHeight = boardH + 'px';
-  boardWrap.classList.add('scrollable');          // 縦・横ともに必要に応じてスクロール
-  boardWrap.style.overflowX = 'auto';             // モバイルでの横スクロールを明示
-  boardWrap.style.webkitOverflowScrolling = 'touch';
+  boardWrap.classList.add('scrollable');
 
-  if (others){
-    others.style.maxHeight = Math.floor(remain * 0.58) + 'px';
-    others.classList.add('scrollable');
+  if (narrow){
+    if (others){ others.style.maxHeight = ''; others.classList.remove('scrollable'); }
+    if (mine){ mine.style.maxHeight = ''; mine.classList.remove('scrollable'); }
+  }else{
+    if (others){ others.style.maxHeight = Math.floor(remain * 0.58) + 'px'; others.classList.add('scrollable'); }
+    if (mine){ mine.style.maxHeight = Math.floor(remain * 0.42) + 'px'; mine.classList.add('scrollable'); }
   }
-  if (mine){
-    mine.style.maxHeight = Math.floor(remain * 0.42) + 'px';
-    mine.classList.add('scrollable');
+
+  /* === iPhone fix: ボードが横スクロールの場合、初回は中央寄せに軽くスクロール */
+  const bw = boardWrap;
+  if (narrow && bw && !bw._scrolledOnce){
+    bw._scrolledOnce = true;
+    setTimeout(()=>{ bw.scrollLeft = Math.max(0, (bw.scrollWidth - bw.clientWidth)/3); }, 0);
   }
 }
 
 function renderGame(){
   const root = $('#app'); root.innerHTML='';
   const room = state.roomSnap?.val(); if (!room) return;
-  if (!room.started) { state.screen='room'; render(); return; }
+  if (!room.started) { state.screen = 'room'; render(); return; }
 
   const me = (room.players||{})[state.myUid]||{};
   const myTurn = room.currentTurnUid===state.myUid && !room.winnerUid;
 
-  if (state.didConfetti && (!room.winnerUid)){ state.didConfetti=false; stopConfettiLoop(); }
+  if (state.didConfetti && (!room.winnerUid)){ state.didConfetti = false; stopConfettiLoop(); }
   updateTurnIndicators(myTurn);
 
-  const layout = document.createElement('div'); layout.className='game-layout';
+  const layout = document.createElement('div'); layout.className = 'game-layout';
 
-  /* 上段：お題 / 進行状況 / 操作 */
   const topRow = document.createElement('div'); topRow.className='top-row';
-
   const topic = document.createElement('div'); topic.className='panel';
   topic.innerHTML = `<div class="hint">お題</div><div class="topic-chip"><span class="emoji">🎯</span><span>${room.topic||'—'}</span></div>`;
   topRow.appendChild(topic);
@@ -393,8 +691,7 @@ function renderGame(){
   }else{
     status.innerHTML = `<div class="turn-banner"><span class="blink">⏳</span> 手番：<strong>${room.players[room.currentTurnUid]?.name||'—'}</strong> <span class="pill">${room.consec===1?'あと1回攻撃可':'最大2連まで'}</span></div>`;
     if (room.lastAttack){
-      const la = room.lastAttack;
-      const who = room.players[la.by]?.name||'—';
+      const la = room.lastAttack; const who = room.players[la.by]?.name||'—';
       status.innerHTML += `<div class="hint" style="margin-top:6px">直前：${who}「${la.kana}」→${la.success?'成功':'失敗'}</div>`;
       if (la.ts && la.ts !== state.lastSeenAttackTs){
         state.lastSeenAttackTs = la.ts;
@@ -405,20 +702,13 @@ function renderGame(){
   topRow.appendChild(status);
 
   const actions = document.createElement('div'); actions.className='panel';
-  const restartBtn = document.createElement('button');
-  restartBtn.className='danger';
-  restartBtn.textContent='🔁 リスタート（同じ面子）';
+  const restartBtn = document.createElement('button'); restartBtn.className='danger'; restartBtn.textContent='🔁 リスタート（同じ面子）';
   restartBtn.onclick = async ()=>{
-    if (confirm('最初からやり直しますか？')) {
-      await restart(state.roomId);
-      state.screen = 'room';
-      render();
-    }
+    if (confirm('最初からやり直しますか？')) { await restart(state.roomId); state.screen = 'room'; render(); }
   };
   actions.appendChild(restartBtn);
-  actions.appendChild(Object.assign(document.createElement('div'),{className:'hint',innerHTML:'攻撃は自分の番にボードの文字をタップ。成功するともう1回だけ続けられます。'}));
+  actions.appendChild(Object.assign(document.createElement('div'),{className:'hint',innerHTML:'攻撃は自分の番にボードの文字をクリック。成功するともう1回だけ続けられます。'}));
   topRow.appendChild(actions);
-
   layout.appendChild(topRow);
 
   /* 左：ボード */
@@ -440,21 +730,17 @@ function renderGame(){
     if (canClick){ t.onclick = ()=> attack(state.roomId, state.myUid, kana); }
     return t;
   };
-
   ROWS.forEach(row=>{
-    const label = document.createElement('div'); label.className='rowlabel'; label.textContent=row.label;
-    grid.appendChild(label);
+    const label = document.createElement('div'); label.className='rowlabel'; label.textContent=row.label; grid.appendChild(label);
     row.cells.forEach(cell=>{
       if (!cell){ const ph = document.createElement('div'); ph.className='tile placeholder'; ph.textContent='—'; grid.appendChild(ph); }
       else{ grid.appendChild(makeTile(cell)); }
     });
   });
-
   boardWrap.appendChild(grid);
 
-  /* 右：他プレイヤー / 自分の手札（モバイルでは下に回る） */
+  /* 右：他プレイヤー＋自分 */
   const side = document.createElement('div'); side.className='side-stack';
-
   const others = document.createElement('div'); others.className='panel'; others.id='panel-others';
   others.innerHTML = `<h3 style="margin:0 0 6px">他の御方</h3>`;
   const list = document.createElement('div'); list.className='players';
@@ -477,15 +763,10 @@ function renderGame(){
   mine.appendChild(myhand);
   mine.appendChild(Object.assign(document.createElement('div'),{className:'hint',innerHTML:'×は空白カード。公開条件：宣言文字に一致したカード（同じ文字が複数あれば全部公開）。×以外が全部公開で脱落。'}));
 
-  side.appendChild(others);
-  side.appendChild(mine);
-
-  layout.appendChild(boardWrap);
-  layout.appendChild(side);
+  side.appendChild(others); side.appendChild(mine);
+  layout.appendChild(boardWrap); layout.appendChild(side);
 
   root.appendChild(layout);
-
-
   fitLayoutHeights();
 }
 
@@ -508,15 +789,113 @@ function render(){
     joinRoom(r, n||('ななし_'+state.myUid.slice(0,4))).then(ref=>{
       state.roomRef = ref; subscribeRoom(); state.screen='room'; render();
     });
-  }else{
-    state.screen='lobby'; render();
+  }else{ state.screen='lobby'; render(); }
+})();
+</script>
+
+<script>
+/* === Sound Effects system（省略なし） === */
+const SILENT_WAV = "data:audio/wav;base64,UklGRiYAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQIAAAAAAA==";
+const Sound = { master:0.7, enabled: localStorage.getItem('irohani_se') !== 'off', unlockOnce:false,
+  setEnabled(v){ this.enabled=v; localStorage.setItem('irohani_se', v ? 'on' : 'off'); const b=document.getElementById('soundToggle'); if (b) b.textContent=v?'🔊 SE ON':'🔇 SE OFF'; },
+  toggle(){ this.setEnabled(!this.enabled); },
+  unlock(){ if (this.unlockOnce) return; this.unlockOnce=true; const a=new Audio(SILENT_WAV); a.volume=0.001; a.play().catch(()=>{}); }
+};
+function makeTone(name, volume=1){
+  const sources = [`se/${name}.mp3`, `se/${name}.wav`]; const pool=[];
+  function getAudio(){ let a = pool.find(x => x.ended || x.paused); if (!a){ a=new Audio(sources[0]); a.preload='auto'; a.addEventListener('error', ()=>{ if (a.src.indexOf('.mp3')!==-1) a.src=sources[1]; }, { once:true }); pool.push(a); } a.volume = volume * Sound.master; return a; }
+  return { play(){ if (!Sound.enabled) return; const a=getAudio(); a.currentTime=0; a.play().catch(()=>{});} };
+}
+const SE = { click: makeTone('click', 0.9), start: makeTone('start', 1.0), lock: makeTone('lock', 1.0), hit: makeTone('hit', 1.0), miss: makeTone('miss', 0.9), win: makeTone('win', 1.0) };
+window.addEventListener('pointerdown', ()=> Sound.unlock(), { once:true });
+document.addEventListener('DOMContentLoaded', ()=>{ const b=document.getElementById('soundToggle'); if (b){ b.textContent=Sound.enabled?'🔊 SE ON':'🔇 SE OFF'; b.addEventListener('click', ()=> Sound.toggle()); } });
+
+(function(){
+  const _render = window.render;
+  if (typeof _render === 'function'){
+    window.render = function(){ const r=_render.apply(this, arguments); setTimeout(hookSEDOM, 0); return r; };
+  } else { window.addEventListener('load', ()=> setTimeout(hookSEDOM, 0)); }
+  if (typeof window.startGame === 'function'){ const _startGame=window.startGame; window.startGame=function(){ try{ SE.start.play(); }catch{} return _startGame.apply(this, arguments); }; }
+  if (typeof window.restart === 'function'){ const _restart=window.restart; window.restart=function(){ try{ SE.click.play(); }catch{} return _restart.apply(this, arguments); }; }
+  if (typeof window.showToast === 'function'){ const _showToast=window.showToast; window.showToast=function(msg){ try{ const s=String(msg||''); if (/(成功|🎯|あたり)/.test(s)) SE.hit.play(); else if (/(失敗|はずれ|💥)/.test(s)) SE.miss.play(); }catch{} return _showToast.apply(this, arguments); }; }
+  function hookSEDOM(){
+    const enter=document.getElementById('enter'); if (enter && !enter._seBound){ enter.addEventListener('click', ()=> SE.click.play()); enter._seBound=true; }
+    const pick=document.getElementById('pickTopic'); if (pick && !pick._seBound){ pick.addEventListener('click', ()=> SE.click.play()); pick._seBound=true; }
+    const lockBtn=document.getElementById('lock'); if (lockBtn && !lockBtn._seBound){ lockBtn.addEventListener('click', ()=> SE.lock.play()); lockBtn._seBound=true; }
+    document.querySelectorAll('.tile.clickable').forEach(el=>{ if (!el._seBound){ el.addEventListener('click', ()=> SE.click.play(), { capture:true }); el._seBound=true; } });
   }
 })();
 </script>
 
-<!-- SE/BGM スクリプト（前回と同じ） -->
 <script>
-/* Sound/BGM 関連は前回のまま（省略しても機能は同一）。必要ならここに前回のコードをそのまま貼り付けてください。 */
+/* === BGM Controller（省略なし） === */
+const BGM = (function(){
+  const sources = ['bgm/theme.mp3', 'bgm/theme.wav'];
+  let audio = null;
+  function ensure(){ if (audio) return audio; audio = new Audio(sources[0]); audio.loop=true; audio.preload='auto'; audio.volume=0.5; audio.addEventListener('error', ()=>{ if (audio && audio.src.indexOf('.mp3') !== -1) audio.src = sources[1]; }, { once:true }); return audio; }
+  function playSafely(){ try{ ensure(); return audio.play(); }catch(e){ return Promise.reject(e); } }
+  const api = { enabled: localStorage.getItem('irohani_bgm') !== 'off',
+    setEnabled(v){ this.enabled=v; localStorage.setItem('irohani_bgm', v ? 'on' : 'off'); const b=document.getElementById('bgmToggle'); if (b) b.textContent=v?'🎵 BGM ON':'🔕 BGM OFF'; if (!audio) ensure(); if (v){ playSafely().catch(()=>{}); } else { try{ audio.pause(); }catch{} } },
+    toggle(){ this.setEnabled(!this.enabled); }, _unlock(){ if (!audio) ensure(); if (this.enabled){ playSafely().catch(()=>{}); } },
+    setVolume(x){ ensure(); audio.volume = Math.max(0, Math.min(1, x)); }
+  };
+  return api;
+})();
+(function(){
+  const _unlock = Sound.unlock;
+  Sound.unlock = function(){ const r=_unlock.apply(Sound, arguments); try{ BGM._unlock(); }catch{} return r; };
+  document.addEventListener('DOMContentLoaded', ()=>{ const b=document.getElementById('bgmToggle'); if (b){ b.textContent = BGM.enabled ? '🎵 BGM ON' : '🔕 BGM OFF'; b.addEventListener('click', ()=> BGM.toggle()); } });
+})();
 </script>
+
+<script>
+// Initialize BGM volume slider
+document.addEventListener('DOMContentLoaded', ()=>{
+  const vol = document.getElementById('bgmVolume');
+  if (vol){
+    const saved = parseFloat(localStorage.getItem('irohani_bgm_volume'));
+    let v = (!isNaN(saved)? saved: 0.5);
+    vol.value = Math.round(v*100);
+    BGM.setVolume(v);
+    vol.addEventListener('input', ()=>{
+      const val = vol.value/100;
+      BGM.setVolume(val);
+      localStorage.setItem('irohani_bgm_volume', val.toFixed(2));
+    });
+  }
+});
+</script>
+
+<script>
+// Persisted BGM volume (early)
+(function(){
+  const KEY = 'irohani_bgm_vol';
+  function clamp01(x){ return Math.max(0, Math.min(1, x)); }
+  document.addEventListener('DOMContentLoaded', ()=>{
+    const el = document.getElementById('bgmVolume');
+    if (!el) return;
+    let v = parseFloat(localStorage.getItem(KEY));
+    if (isNaN(v)) v = 0.5;
+    try{ BGM.setVolume(clamp01(v)); }catch(e){}
+    el.value = Math.round(clamp01(v) * 100);
+    el.addEventListener('input', (ev)=>{
+      const val = clamp01(parseInt(ev.target.value,10) / 100);
+      try{ BGM.setVolume(val); }catch(e){}
+      localStorage.setItem(KEY, String(val));
+    });
+  });
+})();
+</script>
+
+<script>
+// Initialize BGM volume early
+(function(){
+  const KEY = 'irohani_bgm_vol';
+  let v = parseFloat(localStorage.getItem(KEY));
+  if (isNaN(v)) v = 0.5;
+  try{ BGM.setVolume(Math.max(0, Math.min(1, v))); }catch(e){}
+})();
+</script>
+
 </body>
 </html>
